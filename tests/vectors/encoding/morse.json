@@ -1,0 +1,88 @@
+{
+  "source": "International Morse Code (ITU-R M.1677-1) + canonical examples cross-checked against multiple Morse references.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "sos",
+      "comment": "The classic distress call.",
+      "input": "SOS",
+      "opts": {},
+      "expected": "... --- ...",
+      "mode": "encode"
+    },
+    {
+      "id": "hello-world",
+      "comment": "Two-word example demonstrating word separator '/'.",
+      "input": "Hello World",
+      "opts": {},
+      "expected": ".... . .-.. .-.. --- / .-- --- .-. .-.. -..",
+      "mode": "encode"
+    },
+    {
+      "id": "morse-code",
+      "comment": "Encoded form of its own name (Wikipedia example).",
+      "input": "MORSE CODE",
+      "opts": {},
+      "expected": "-- --- .-. ... . / -.-. --- -.. .",
+      "mode": "encode"
+    },
+    {
+      "id": "ham-73",
+      "comment": "Ham radio shorthand for 'best regards' — digits 7 and 3.",
+      "input": "73",
+      "opts": {},
+      "expected": "--... ...--",
+      "mode": "encode"
+    },
+    {
+      "id": "lowercase-uppercased",
+      "comment": "Encoder upper-cases lowercase input (Morse is case-insensitive).",
+      "input": "hi",
+      "opts": {},
+      "expected": ".... ..",
+      "mode": "encode"
+    },
+    {
+      "id": "punctuation-question",
+      "comment": "Question mark is in the supported punctuation set.",
+      "input": "WHY?",
+      "opts": {},
+      "expected": ".-- .... -.-- ..--..",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-hello-world",
+      "comment": "Round-trip of the canonical Hello World.",
+      "input": ".... . .-.. .-.. --- / .-- --- .-. .-.. -..",
+      "opts": {},
+      "expected": "HELLO WORLD",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-tolerant-spacing",
+      "comment": "Decoder tolerates extra whitespace around words and the slash.",
+      "input": "  ...   ---   ...  ",
+      "opts": {},
+      "expected": "SOS",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-unknown-token-becomes-question-mark",
+      "comment": "Tokens not in the Morse table are decoded as '?'. (8 dots is not a valid Morse symbol.)",
+      "input": ".... . ........ -----",
+      "opts": {},
+      "expected": "HE?0",
+      "mode": "decode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input is empty output.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}

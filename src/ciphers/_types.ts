@@ -11,6 +11,7 @@ export type CipherCategory =
   | 'modern'
   | 'encoding'
   | 'hash'
+  | 'fun'
   | 'analysis';
 
 export type Mode = 'encode' | 'decode';
