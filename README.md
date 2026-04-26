@@ -15,7 +15,7 @@ Most cipher tools feel like log viewers. Ciphriend wants to feel like the friend
 ## Quick start
 
 ```bash
-nvm use                  # picks up .nvmrc (Node 22 LTS)
+nvm use                  # picks up .nvmrc (Node 24 LTS)
 npm install
 npm run dev              # http://localhost:4321
 npm test                 # vitest — default tier (200 prop iterations, fast vectors)

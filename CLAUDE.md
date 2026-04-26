@@ -103,7 +103,7 @@ Deferred to a future session: Pigpen, Music note, Semaphore, Dancing Men, Zalgo.
 | Crypto | WebCrypto (`crypto.subtle`) — no `crypto-js` |
 | Lint/format | None initially |
 | Hosting | Cloudflare Pages |
-| Node | LTS, pinned in `.nvmrc` |
+| Node | 24 (current LTS), pinned in `.nvmrc`. CI uses `actions/checkout@v6` + `actions/setup-node@v6` to satisfy GitHub's June 2026 Node-20 deprecation. |
 
 ```bash
 npm run dev        # Astro dev at localhost:4321
