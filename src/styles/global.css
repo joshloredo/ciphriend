@@ -102,11 +102,25 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Self-hosted JetBrains Mono. Until the woff2 lands, browsers fall back per the stack above. */
+  /*
+   * Sensible default focus ring for keyboard navigation. Components that
+   * opt into `focus-visible:outline-none + focus-visible:ring-*` (inputs,
+   * textareas, cipher cards) override this; everything else gets a
+   * consistent amber outline regardless of browser defaults.
+   */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Self-hosted JetBrains Mono regular. Single weight is sufficient for cipher I/O.
+   * If we ever need a bold variant, ship JetBrainsMono-Bold.woff2 alongside this
+   * with its own @font-face declaration. */
   @font-face {
     font-family: 'JetBrains Mono';
     src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
-    font-weight: 100 900;
+    font-weight: 400;
     font-style: normal;
     font-display: swap;
   }
@@ -127,9 +141,29 @@
     );
     mix-blend-mode: screen;
   }
-  @media (prefers-reduced-motion: reduce) {
-    .scanlines::after { background-image: none; }
-  }
 
   .glow-amber { box-shadow: var(--shadow-glow); }
+}
+
+/*
+ * Accessible-by-default motion handling.
+ * When the user has requested reduced motion, collapse all transitions
+ * and animations to near-instant. Information must still read without
+ * movement; cipher visualizations render in their final state directly.
+ *
+ * This single rule covers every cipher viz (TraceVisualizer + 10 custom
+ * components) plus any future component that uses standard Tailwind
+ * transition utilities. Components that need motion to convey something
+ * essential should opt back in with motion-safe: utilities.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .scanlines::after { background-image: none; }
 }

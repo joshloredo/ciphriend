@@ -16,6 +16,21 @@ if (!cipher) {
 
 const title = `${cipher.name} — Ciphriend`;
 const description = cipher.tagline;
+
+const CATEGORY_BLURB: Record<string, string> = {
+  classical:
+    'A classical cipher — the kind of thing people used before computers. Fun and educational, but not cryptographically secure.',
+  modern:
+    'A modern cryptographic primitive. Runs in your browser via the native WebCrypto API.',
+  encoding:
+    "A reversible encoding, not encryption. The same input always produces the same output, and there's no secret involved.",
+  hash:
+    "A one-way hash function. The same input always produces the same digest, but you can't recover the input from the digest.",
+  fun: 'Just for fun. Not intended for serious use.',
+  analysis:
+    "An analysis tool. It counts what's in your input rather than transforming it.",
+};
+const blurb = CATEGORY_BLURB[cipher.category] ?? '';
 ---
 
 <Layout {title} {description}>
@@ -31,10 +46,12 @@ const description = cipher.tagline;
 
   <section class="mt-10 max-w-2xl">
     <h2 class="font-display text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
-      &#47;&#47; how it works
+      &#47;&#47; about
     </h2>
     <p class="text-sm text-muted-foreground leading-relaxed">
-      The {cipher.name} is one of the {cipher.category} ciphers Ciphriend ships with. Type into the input above and watch the output update live; press <span class="text-primary font-display">▶</span> in the visualization to step through the transformation character by character.
+      {blurb}
+      {blurb && ' '}
+      Hit <span class="font-display text-foreground">Share link</span> to copy a URL that encodes your current state — recipients open it and their browser reconstructs everything locally. Nothing touches a server.
     </p>
   </section>
 </Layout>

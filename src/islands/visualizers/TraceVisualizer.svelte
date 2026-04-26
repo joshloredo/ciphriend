@@ -129,8 +129,5 @@
   {/if}
 </div>
 
-<style>
-  @media (prefers-reduced-motion: reduce) {
-    .duration-150 { transition-duration: 0ms !important; }
-  }
-</style>
+<!-- Reduced-motion handling lives in src/styles/global.css as a site-wide rule. -->
+
