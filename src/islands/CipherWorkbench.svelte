@@ -140,13 +140,13 @@
   </article>
 {:else}
 <article class="rounded-lg border border-border bg-card overflow-hidden">
-  <header class="flex items-center justify-between gap-3 px-5 py-3 border-b border-border bg-secondary/40">
-    <div>
+  <header class="flex flex-col items-stretch gap-2 px-3 py-3 border-b border-border bg-secondary/40 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-5">
+    <div class="min-w-0">
       <h1 class="font-display text-lg leading-tight">{cipher.name}</h1>
       <p class="text-xs text-muted-foreground">{cipher.tagline}</p>
     </div>
     {#if cipher.modes.length > 1}
-      <div class="flex rounded-md border border-input overflow-hidden font-display text-xs">
+      <div class="flex self-start rounded-md border border-input overflow-hidden font-display text-xs sm:self-auto">
         {#each cipher.modes as m}
           <button
             type="button"
@@ -166,7 +166,7 @@
     {/if}
   </header>
 
-  <div class="p-5 space-y-5">
+  <div class="p-3 space-y-5 sm:p-5">
     {#if cipher.options.length > 0}
       <section class="grid gap-4 sm:grid-cols-2">
         {#each cipher.options as field}

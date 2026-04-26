@@ -41,7 +41,7 @@
     <p class="text-xs text-muted-foreground italic">Type input above to see the braille cells.</p>
   {:else}
     <div
-      class="font-display rounded-md border border-border bg-card/60 p-4 overflow-x-auto"
+      class="font-display rounded-md border border-border bg-card/60 p-3 overflow-x-auto sm:p-4"
       role="img"
       aria-label="Braille cell diagram"
     >

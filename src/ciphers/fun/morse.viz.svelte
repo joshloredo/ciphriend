@@ -55,7 +55,7 @@
     <p class="text-xs text-muted-foreground italic">Type input above to see the timing.</p>
   {:else}
     <div
-      class="font-display text-sm overflow-x-auto rounded-md border border-border bg-card/60 p-4"
+      class="font-display text-sm overflow-x-auto rounded-md border border-border bg-card/60 p-3 sm:p-4"
       role="img"
       aria-label="Morse timing diagram"
     >

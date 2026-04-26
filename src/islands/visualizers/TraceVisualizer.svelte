@@ -66,6 +66,7 @@
       {onSpeed}
     />
 
+    <div class="relative">
     <div
       class="font-display text-sm overflow-x-auto rounded-md border border-border bg-card/60 px-3 py-3 motion-safe:transition-colors"
       role="img"
@@ -125,6 +126,11 @@
           Showing first {MAX_VISIBLE} of {transforms.length} characters. Scroll horizontally for more.
         </p>
       {/if}
+    </div>
+    <div
+      class="pointer-events-none absolute top-0 right-0 bottom-0 w-6 rounded-r-md bg-gradient-to-l from-card to-transparent sm:hidden"
+      aria-hidden="true"
+    ></div>
     </div>
   {/if}
 </div>

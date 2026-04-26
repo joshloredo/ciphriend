@@ -91,6 +91,7 @@
     <p class="text-xs text-muted-foreground italic">Type input above to see the zigzag.</p>
   {:else}
     <!-- The zigzag grid -->
+    <div class="relative">
     <div
       class="font-display text-sm overflow-x-auto rounded-md border border-border bg-card/60 p-3"
       role="img"
@@ -129,6 +130,11 @@
           {/each}
         {/each}
       </div>
+    </div>
+    <div
+      class="pointer-events-none absolute top-0 right-0 bottom-0 w-6 rounded-r-md bg-gradient-to-l from-card to-transparent sm:hidden"
+      aria-hidden="true"
+    ></div>
     </div>
 
     <!-- Read-off strip showing the rails concatenated into the ciphertext -->

@@ -78,8 +78,9 @@
   {#if chunks.length === 0}
     <p class="text-xs text-muted-foreground italic">Type input above to see the bit grouping.</p>
   {:else}
+    <div class="relative">
     <div
-      class="font-display text-xs rounded-md border border-border bg-card/60 p-4 overflow-x-auto"
+      class="font-display text-xs rounded-md border border-border bg-card/60 p-3 overflow-x-auto sm:p-4"
       role="img"
       aria-label="Base64 bit-grouping diagram"
     >
@@ -155,6 +156,11 @@
         <span class="uppercase tracking-wider mr-2">full output:</span>
         <span class="font-display text-foreground break-all">{encoded || '—'}</span>
       </div>
+    </div>
+    <div
+      class="pointer-events-none absolute top-0 right-0 bottom-0 w-6 rounded-r-md bg-gradient-to-l from-card to-transparent sm:hidden"
+      aria-hidden="true"
+    ></div>
     </div>
   {/if}
 </div>

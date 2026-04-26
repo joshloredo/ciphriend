@@ -14,10 +14,10 @@
   const speeds = [0.25, 0.5, 1, 2];
 </script>
 
-<div class="flex items-center gap-3 text-xs font-display">
+<div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs font-display">
   <button
     type="button"
-    class="grid place-items-center size-8 rounded-md border border-input bg-card hover:bg-secondary transition-colors"
+    class="grid place-items-center size-8 rounded-md border border-input bg-card hover:bg-secondary transition-colors shrink-0"
     onclick={onPlayToggle}
     aria-label={playing ? 'Pause' : 'Play'}
   >
@@ -35,7 +35,7 @@
 
   <input
     type="range"
-    class="flex-1 accent-primary"
+    class="flex-1 min-w-[8rem] accent-primary"
     min={0}
     max={Math.max(total, 1)}
     value={step}
@@ -43,11 +43,11 @@
     aria-label="Step"
   />
 
-  <span class="text-muted-foreground tabular-nums w-16 text-right">
+  <span class="text-muted-foreground tabular-nums w-16 text-right shrink-0">
     {step} / {total}
   </span>
 
-  <div class="flex items-center gap-1" role="group" aria-label="Playback speed">
+  <div class="flex items-center gap-1 shrink-0 ml-auto sm:ml-0" role="group" aria-label="Playback speed">
     {#each speeds as s}
       <button
         type="button"

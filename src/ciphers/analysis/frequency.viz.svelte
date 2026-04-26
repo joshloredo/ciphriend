@@ -40,12 +40,12 @@
     <p class="text-xs text-muted-foreground italic">Type input above to see the distribution.</p>
   {:else}
     <div
-      class="font-display text-xs rounded-md border border-border bg-card/60 p-4"
+      class="font-display text-xs rounded-md border border-border bg-card/60 p-3 sm:p-4"
       role="img"
       aria-label="Letter frequency histogram"
     >
       <div
-        class="grid items-end gap-x-1"
+        class="grid items-end gap-x-px sm:gap-x-1"
         style:grid-template-columns="repeat(26, minmax(0, 1fr))"
         style:height="11rem"
       >
@@ -71,7 +71,7 @@
         {/each}
       </div>
       <div
-        class="grid gap-x-1 mt-2 text-[10px] text-center text-muted-foreground tabular-nums"
+        class="grid gap-x-px mt-2 text-[9px] text-center text-muted-foreground tabular-nums sm:gap-x-1 sm:text-[10px]"
         style:grid-template-columns="repeat(26, minmax(0, 1fr))"
       >
         {#each alphabet as letter}
@@ -79,6 +79,7 @@
             <div class="text-foreground/80">{letter}</div>
             <div class="text-primary/80">{(result.percentages[letter] ?? 0).toFixed(0)}</div>
             <div class={[
+              'hidden sm:block',
               Math.abs(deviation(letter)) >= 3 ? 'text-foreground' : 'opacity-50',
             ]}>{deviationGlyph(letter)}</div>
           </div>
