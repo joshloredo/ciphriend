@@ -1,0 +1,72 @@
+{
+  "source": "Grade 1 English Braille letter mappings (https://en.wikipedia.org/wiki/English_Braille). Each letter encoded into Unicode block U+2800-U+28FF.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "single-A",
+      "comment": "A is dot 1 only (U+2801).",
+      "input": "A",
+      "opts": {},
+      "expected": "⠁",
+      "mode": "encode"
+    },
+    {
+      "id": "hello",
+      "comment": "Five letters → five braille glyphs.",
+      "input": "Hello",
+      "opts": {},
+      "expected": "⠓⠑⠇⠇⠕",
+      "mode": "encode"
+    },
+    {
+      "id": "spaces-as-blank-cells",
+      "comment": "Spaces become blank braille cells (U+2800) so the rhythm is preserved.",
+      "input": "Hi friend",
+      "opts": {},
+      "expected": "⠓⠊⠀⠋⠗⠊⠑⠝⠙",
+      "mode": "encode"
+    },
+    {
+      "id": "alphabet",
+      "comment": "Full A-Z reference output.",
+      "input": "abcdefghijklmnopqrstuvwxyz",
+      "opts": {},
+      "expected": "⠁⠃⠉⠙⠑⠋⠛⠓⠊⠚⠅⠇⠍⠝⠕⠏⠟⠗⠎⠞⠥⠧⠺⠭⠽⠵",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-roundtrip",
+      "comment": "Decode recovers the uppercase original.",
+      "input": "⠓⠑⠇⠇⠕",
+      "opts": {},
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-blank-becomes-space",
+      "comment": "Blank cells decode to spaces.",
+      "input": "⠓⠊⠀⠋⠗⠊⠑⠝⠙",
+      "opts": {},
+      "expected": "HI FRIEND",
+      "mode": "decode"
+    },
+    {
+      "id": "non-letter-input-skipped",
+      "comment": "Digits and punctuation are silently dropped on encode (Grade 1 doesn't include numeric/punctuation indicators).",
+      "input": "42!",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}

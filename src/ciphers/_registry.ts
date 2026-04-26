@@ -12,6 +12,7 @@ import { base64 } from './encoding/base64';
 import { hex } from './encoding/hex';
 import { url } from './encoding/url';
 import { binary } from './encoding/binary';
+import { braille } from './encoding/braille';
 import { sha256 } from './hash/sha-256';
 import { aesGcm } from './modern/aes-gcm';
 import { morse } from './fun/morse';
@@ -40,6 +41,7 @@ export const ciphers: CipherSpec[] = [
   hex as CipherSpec,
   url as CipherSpec,
   binary as CipherSpec,
+  braille as CipherSpec,
   sha256 as CipherSpec,
   aesGcm as CipherSpec,
   morse as CipherSpec,
