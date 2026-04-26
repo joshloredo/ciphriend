@@ -308,14 +308,14 @@ Wrangler authenticates via OAuth (`npx wrangler login`, one-time browser flow). 
 
 **Before deploying:** run `npm test` and `npm run test:thorough`. Both must pass — production deploys without test gating are technically possible from a local machine, but our discipline is to gate. CI (`test.yml`) runs the same suite on every push as a backstop.
 
-### Inactive: GitHub Actions auto-deploy (Path B)
+### Dormant: GitHub Actions auto-deploy (Path B)
 
-`.github/workflows/deploy.yml` exists and is wired to deploy on push to `main`, but the required secrets aren't set:
+`.github/workflows/deploy.yml` runs `npm ci → npm test → npm run build` on every push to `main` (the test step is the live CI backstop). The deploy step is **gated** on the two Cloudflare secrets being present:
 
 - `CLOUDFLARE_API_TOKEN` — generate at https://dash.cloudflare.com/profile/api-tokens
 - `CLOUDFLARE_ACCOUNT_ID` — `npx wrangler whoami` shows it
 
-To enable Path B, set those two secrets via `gh secret set` and re-run the workflow. Path A and B can coexist; whichever runs last wins.
+When the secrets are absent (current default), the deploy step is skipped via `if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''` and the workflow goes green. Tests still run. To enable auto-deploy later: `gh secret set CLOUDFLARE_API_TOKEN` + `gh secret set CLOUDFLARE_ACCOUNT_ID`. No workflow file edit needed — the existing `if:` will start matching. Path A and B can coexist; whichever runs last wins.
 
 ### Domain
 

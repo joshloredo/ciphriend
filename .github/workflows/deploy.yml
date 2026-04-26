@@ -12,6 +12,12 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Job-level env so the deploy step's `if:` can read env.X. Empty values
+    # mean the secrets aren't set — that's the signal to skip the deploy
+    # gracefully (deploys are local via `npm run deploy`; CI just runs tests).
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -22,8 +28,9 @@ jobs:
       - run: npm test
       - run: npm run build
       - name: Publish to Cloudflare Pages
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
         uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist --project-name=ciphriend
