@@ -1,0 +1,56 @@
+{
+  "source": "Hand-written; alternating-case behavior is unambiguous.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "hello-world",
+      "comment": "Letters alternate starting lowercase; non-letters do not advance the case toggle, so the alternation continues unbroken across the space.",
+      "input": "hello world",
+      "opts": {},
+      "expected": "hElLo WoRlD",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-normalizes",
+      "comment": "Decode applies the same alternation; mixed-case input is overwritten with the standard pattern.",
+      "input": "hElLo wOrLd",
+      "opts": {},
+      "expected": "hElLo WoRlD",
+      "mode": "decode"
+    },
+    {
+      "id": "all-letters-upper",
+      "comment": "Existing case is overwritten — toggle starts lowercase regardless of input case.",
+      "input": "HELLO",
+      "opts": {},
+      "expected": "hElLo",
+      "mode": "encode"
+    },
+    {
+      "id": "punctuation-preserves-toggle",
+      "comment": "Spaces and punctuation pass through without flipping the case toggle.",
+      "input": "ab!cd",
+      "opts": {},
+      "expected": "aB!cD",
+      "mode": "encode"
+    },
+    {
+      "id": "skeptical",
+      "comment": "Classic 'are you sure' application.",
+      "input": "sure that worked",
+      "opts": {},
+      "expected": "sUrE tHaT wOrKeD",
+      "mode": "encode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}

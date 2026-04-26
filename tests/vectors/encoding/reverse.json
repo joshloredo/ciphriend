@@ -1,0 +1,56 @@
+{
+  "source": "Hand-written; behavior is unambiguous string reversal.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "hello",
+      "comment": "Basic reversal preserving punctuation positions.",
+      "input": "Hello, friend!",
+      "opts": {},
+      "expected": "!dneirf ,olleH",
+      "mode": "encode"
+    },
+    {
+      "id": "palindrome",
+      "comment": "Palindromes are fixed points (input equals its reverse).",
+      "input": "racecar",
+      "opts": {},
+      "expected": "racecar",
+      "mode": "encode"
+    },
+    {
+      "id": "self-inverse",
+      "comment": "Reversing twice returns the original (involution).",
+      "input": "!dneirf ,olleH",
+      "opts": {},
+      "expected": "Hello, friend!",
+      "mode": "decode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode-emoji",
+      "comment": "Emoji surrogate pairs are kept intact (single code points reversed).",
+      "input": "abc🔒xyz",
+      "opts": {},
+      "expected": "zyx🔒cba",
+      "mode": "encode"
+    },
+    {
+      "id": "single-char",
+      "comment": "Single-character input is unchanged.",
+      "input": "X",
+      "opts": {},
+      "expected": "X",
+      "mode": "encode"
+    }
+  ]
+}

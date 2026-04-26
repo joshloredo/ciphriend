@@ -11,6 +11,9 @@ import { binary } from './encoding/binary';
 import { sha256 } from './hash/sha-256';
 import { aesGcm } from './modern/aes-gcm';
 import { morse } from './fun/morse';
+import { reverse } from './fun/reverse';
+import { spongebob } from './fun/spongebob';
+import { leet } from './fun/leet';
 import { frequency } from './analysis/frequency';
 
 /**
@@ -30,6 +33,9 @@ export const ciphers: CipherSpec[] = [
   sha256 as CipherSpec,
   aesGcm as CipherSpec,
   morse as CipherSpec,
+  reverse as CipherSpec,
+  spongebob as CipherSpec,
+  leet as CipherSpec,
   frequency as CipherSpec,
 ];
 

@@ -1,0 +1,48 @@
+{
+  "source": "Hand-written; common Leet substitution table {a:4, b:8, e:3, g:9, i:1, l:1, o:0, s:5, t:7, z:2}.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "hello-friend",
+      "comment": "Each lower-case letter maps to its leet digit; non-mapped chars pass through.",
+      "input": "hello friend",
+      "opts": {},
+      "expected": "h3110 fr13nd",
+      "mode": "encode"
+    },
+    {
+      "id": "leet-greetz",
+      "comment": "More substitutions in action.",
+      "input": "leet greetz",
+      "opts": {},
+      "expected": "1337 9r3372",
+      "mode": "encode"
+    },
+    {
+      "id": "case-insensitive",
+      "comment": "Uppercase letters map identically to their lowercase counterparts.",
+      "input": "BEAST",
+      "opts": {},
+      "expected": "83457",
+      "mode": "encode"
+    },
+    {
+      "id": "preserves-non-mappable",
+      "comment": "Letters not in the leet table pass through; punctuation and digits unaffected.",
+      "input": "x marks the spot, 42!",
+      "opts": {},
+      "expected": "x m4rk5 7h3 5p07, 42!",
+      "mode": "encode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}
