@@ -24,6 +24,7 @@ All four are required for a cipher to be considered "production-ready."
 | `rfc/` | [IETF RFCs](https://www.rfc-editor.org/) (4648 §10 Base64, 6234 SHA-2, 3174 SHA-1, etc.) | IETF (test vectors are fair use) | Encodings + hashes — definitive. |
 | `classical/` | Wikipedia, [CrypTool](https://www.cryptool.org/), [dCode](https://www.dcode.fr/) cross-validation captures | Captured outputs (cite sources per file) | Caesar, Vigenère, Atbash, Rail Fence — classical ciphers without formal authoritative vector sets. |
 | `encoding/` | Hand-written canonical examples + cross-checked against platform globals (`encodeURIComponent`, `Buffer.from(s).toString('hex')`, etc.) | Captured outputs | Hex, URL, Binary, Morse — encodings without their own RFC vector tables. |
+| `modern/` | Hand-generated decode-only fixtures from Ciphriend's own modern-crypto schemes (AES-GCM-with-PBKDF2). Cross-validated via property tests against `node:crypto`. | Captured outputs | Composite schemes that don't have a single authoritative vector source. |
 
 Each file in these subdirectories MUST start with a JSON header that names its source, license, version (commit hash or release tag for Wycheproof; document number for NIST; RFC number; or capture date + tool URL for classical).
 

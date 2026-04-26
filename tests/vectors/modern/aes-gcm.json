@@ -1,0 +1,48 @@
+{
+  "source": "Hand-generated decode-only fixtures: ciphertexts produced by Ciphriend's own AES-256-GCM + PBKDF2 (SHA-256, 100k iter) implementation, captured once via /tmp/gen-aes-vectors.mjs and committed. Decryption is deterministic given (ciphertext, passphrase), so these stay stable.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26 via Ciphriend AES-GCM v0.1.0",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "empty",
+      "comment": "Empty plaintext round-trips. Ciphertext is salt(16) || iv(12) || tag(16) = 44 bytes minimum.",
+      "input": "mKPcow2h0FzFaDT7+BGZnQAQsHtUz+HU6mO+zrZPVHBJLMN44HDr4AMcwX4=",
+      "opts": { "passphrase": "open-sesame" },
+      "expected": "",
+      "mode": "decode"
+    },
+    {
+      "id": "hello-world",
+      "comment": "Canonical 'Hello, World!' decrypted with passphrase 'open-sesame'.",
+      "input": "aOqCz/mYA2B073nwdTZjjihSefTJo9isWbm8tvmIQje6J9IXtPo+/IbIqsAwX4MmaKS1lEnpNx+l",
+      "opts": { "passphrase": "open-sesame" },
+      "expected": "Hello, World!",
+      "mode": "decode"
+    },
+    {
+      "id": "longer-prose",
+      "comment": "Multi-block plaintext exercises stream behavior.",
+      "input": "xaJelZwcnsQVstrNe2HKRzjMOAiZV50y54ibfpVN0y34hHnHn0Ex5qm2GehF1cE8TDtlkUGzgOmsq/rHSsy6x4AEv8W+KZQsvhfOAAhJc/vuwAz/4EYKtQjbcIau0JyIhXvxNg==",
+      "opts": { "passphrase": "lemon7" },
+      "expected": "The quick brown fox jumps over the lazy dog. Repeatedly.",
+      "mode": "decode"
+    },
+    {
+      "id": "unicode-passphrase",
+      "comment": "Multi-byte UTF-8 passphrase round-trips correctly through PBKDF2.",
+      "input": "OtO0e2EkF0ON4l4ktZ0tY8vPYvNBCg633S/8BPgk9blfgQI16UVQM+x+KhQcCsL2wR+QjpGeEc9nHi5FRlM=",
+      "opts": { "passphrase": "café-α-β-γ" },
+      "expected": "Ciphriend says hi.",
+      "mode": "decode"
+    },
+    {
+      "id": "unicode-plaintext",
+      "comment": "Plaintext with multi-byte UTF-8 (é + emoji) decodes correctly.",
+      "input": "Eu3MYjayXdGyEDvkcOpZSxgYJvTryYuTYjhgLaJTjRJVS8qZTJrkaMKAr5R7ts6nDKTr1Xwu+aAUZf3Gaos=",
+      "opts": { "passphrase": "test-pw" },
+      "expected": "héllo 🔒 secret",
+      "mode": "decode"
+    }
+  ]
+}
