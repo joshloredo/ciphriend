@@ -22,7 +22,8 @@ All four are required for a cipher to be considered "production-ready."
 | `wycheproof/` | [C2SP/wycheproof](https://github.com/C2SP/wycheproof) (formerly Google) | Apache 2.0 | AES-GCM, AES-CBC, HMAC, SHA-2 family, ECDSA, RSA. **Adversarial — the gold standard.** |
 | `nist/` | [NIST CAVP](https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program) | Public domain (US Govt) | The official certification suite. AES, SHA-2/3, HMAC, etc. Slower than Wycheproof; more thorough. |
 | `rfc/` | [IETF RFCs](https://www.rfc-editor.org/) (4648 §10 Base64, 6234 SHA-2, 3174 SHA-1, etc.) | IETF (test vectors are fair use) | Encodings + hashes — definitive. |
-| `classical/` | Wikipedia, [CrypTool](https://www.cryptool.org/), [dCode](https://www.dcode.fr/) cross-validation captures | Captured outputs (cite sources per file) | Caesar, Vigenère, Atbash, Rail Fence, Morse, etc. |
+| `classical/` | Wikipedia, [CrypTool](https://www.cryptool.org/), [dCode](https://www.dcode.fr/) cross-validation captures | Captured outputs (cite sources per file) | Caesar, Vigenère, Atbash, Rail Fence — classical ciphers without formal authoritative vector sets. |
+| `encoding/` | Hand-written canonical examples + cross-checked against platform globals (`encodeURIComponent`, `Buffer.from(s).toString('hex')`, etc.) | Captured outputs | Hex, URL, Binary, Morse — encodings without their own RFC vector tables. |
 
 Each file in these subdirectories MUST start with a JSON header that names its source, license, version (commit hash or release tag for Wycheproof; document number for NIST; RFC number; or capture date + tool URL for classical).
 

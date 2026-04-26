@@ -1,0 +1,64 @@
+{
+  "source": "Hand-written canonical hex encodings + cross-checked against Buffer.from(s).toString('hex').",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "empty",
+      "comment": "Empty input -> empty output.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "hello",
+      "comment": "ASCII 'Hello' as hex.",
+      "input": "Hello",
+      "opts": {},
+      "expected": "48656c6c6f",
+      "mode": "encode"
+    },
+    {
+      "id": "world-bang",
+      "comment": "Punctuation included.",
+      "input": "World!",
+      "opts": {},
+      "expected": "576f726c6421",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-tolerates-whitespace",
+      "comment": "Decoder tolerates whitespace within the hex stream.",
+      "input": "48 65 6c 6c 6f",
+      "opts": {},
+      "expected": "Hello",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-tolerates-uppercase",
+      "comment": "Decoder accepts uppercase hex digits.",
+      "input": "48656C6C6F",
+      "opts": {},
+      "expected": "Hello",
+      "mode": "decode"
+    },
+    {
+      "id": "ascii-space",
+      "comment": "ASCII space (0x20) encodes as 20.",
+      "input": " ",
+      "opts": {},
+      "expected": "20",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode",
+      "comment": "UTF-8-encoded multi-byte characters.",
+      "input": "é",
+      "opts": {},
+      "expected": "c3a9",
+      "mode": "encode"
+    }
+  ]
+}

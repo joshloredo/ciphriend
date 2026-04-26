@@ -1,0 +1,64 @@
+{
+  "source": "Hand-written canonical binary encodings (8 bits per byte, space-separated). Cross-checked against the ASCII table.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "empty",
+      "comment": "Empty input → empty output.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "single-A",
+      "comment": "ASCII 'A' is 0x41 = 0100 0001.",
+      "input": "A",
+      "opts": {},
+      "expected": "01000001",
+      "mode": "encode"
+    },
+    {
+      "id": "Hi",
+      "comment": "Two-character ASCII.",
+      "input": "Hi",
+      "opts": {},
+      "expected": "01001000 01101001",
+      "mode": "encode"
+    },
+    {
+      "id": "OK-bang",
+      "comment": "ASCII with punctuation.",
+      "input": "OK!",
+      "opts": {},
+      "expected": "01001111 01001011 00100001",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-no-spaces",
+      "comment": "Decoder tolerates an unseparated bitstream.",
+      "input": "0100100001101001",
+      "opts": {},
+      "expected": "Hi",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-with-tabs-and-newlines",
+      "comment": "Decoder tolerates any whitespace as separator.",
+      "input": "01001111\t01001011\n00100001",
+      "opts": {},
+      "expected": "OK!",
+      "mode": "decode"
+    },
+    {
+      "id": "unicode",
+      "comment": "UTF-8 multi-byte: é = 0xC3 0xA9.",
+      "input": "é",
+      "opts": {},
+      "expected": "11000011 10101001",
+      "mode": "encode"
+    }
+  ]
+}

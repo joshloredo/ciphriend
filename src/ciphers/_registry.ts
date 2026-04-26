@@ -3,6 +3,10 @@ import { caesar } from './classical/caesar';
 import { rot13 } from './classical/rot13';
 import { atbash } from './classical/atbash';
 import { vigenere } from './classical/vigenere';
+import { base64 } from './encoding/base64';
+import { hex } from './encoding/hex';
+import { url } from './encoding/url';
+import { binary } from './encoding/binary';
 
 /**
  * The single source of truth for which ciphers exist.
@@ -13,6 +17,10 @@ export const ciphers: CipherSpec[] = [
   rot13 as CipherSpec,
   atbash as CipherSpec,
   vigenere as CipherSpec,
+  base64 as CipherSpec,
+  hex as CipherSpec,
+  url as CipherSpec,
+  binary as CipherSpec,
 ];
 
 /** Look up a cipher by id. Used by route handlers and the workbench. */

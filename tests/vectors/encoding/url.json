@@ -1,0 +1,72 @@
+{
+  "source": "Hand-written canonical URL-component encodings + cross-checked against encodeURIComponent.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "empty",
+      "comment": "Empty input → empty output.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "unreserved-passthrough",
+      "comment": "Unreserved characters per RFC 3986 (alpha, digits, -_.~) are not encoded.",
+      "input": "Hello-world_2026.test~ok",
+      "opts": {},
+      "expected": "Hello-world_2026.test~ok",
+      "mode": "encode"
+    },
+    {
+      "id": "spaces",
+      "comment": "Spaces become %20.",
+      "input": "hello world",
+      "opts": {},
+      "expected": "hello%20world",
+      "mode": "encode"
+    },
+    {
+      "id": "reserved-symbols",
+      "comment": "Reserved URL syntax characters are percent-encoded.",
+      "input": "a/b?c=d&e",
+      "opts": {},
+      "expected": "a%2Fb%3Fc%3Dd%26e",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode",
+      "comment": "Multi-byte UTF-8 characters become percent-encoded byte sequences.",
+      "input": "café",
+      "opts": {},
+      "expected": "caf%C3%A9",
+      "mode": "encode"
+    },
+    {
+      "id": "emoji",
+      "comment": "Surrogate-pair emoji encoded as their UTF-8 bytes.",
+      "input": "🔒",
+      "opts": {},
+      "expected": "%F0%9F%94%92",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-spaces",
+      "comment": "Round-trip with %20 spaces.",
+      "input": "hello%20world",
+      "opts": {},
+      "expected": "hello world",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-mixed-case",
+      "comment": "Decoder accepts upper-case hex in escapes.",
+      "input": "caf%c3%A9",
+      "opts": {},
+      "expected": "café",
+      "mode": "decode"
+    }
+  ]
+}

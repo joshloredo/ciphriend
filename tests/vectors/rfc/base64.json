@@ -1,0 +1,96 @@
+{
+  "source": "RFC 4648 §10 Base64 test vectors (https://datatracker.ietf.org/doc/html/rfc4648#section-10) + extended canonical examples.",
+  "license": "IETF (test vectors quoted from spec are fair use).",
+  "version": "RFC 4648 (October 2006)",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "rfc4648-1-empty",
+      "comment": "Empty input → empty output (RFC 4648 §10).",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "rfc4648-2-f",
+      "comment": "BASE64('f') = 'Zg==' (RFC 4648 §10).",
+      "input": "f",
+      "opts": {},
+      "expected": "Zg==",
+      "mode": "encode"
+    },
+    {
+      "id": "rfc4648-3-fo",
+      "comment": "BASE64('fo') = 'Zm8=' (RFC 4648 §10).",
+      "input": "fo",
+      "opts": {},
+      "expected": "Zm8=",
+      "mode": "encode"
+    },
+    {
+      "id": "rfc4648-4-foo",
+      "comment": "BASE64('foo') = 'Zm9v' (RFC 4648 §10).",
+      "input": "foo",
+      "opts": {},
+      "expected": "Zm9v",
+      "mode": "encode"
+    },
+    {
+      "id": "rfc4648-5-foob",
+      "comment": "BASE64('foob') = 'Zm9vYg==' (RFC 4648 §10).",
+      "input": "foob",
+      "opts": {},
+      "expected": "Zm9vYg==",
+      "mode": "encode"
+    },
+    {
+      "id": "rfc4648-6-fooba",
+      "comment": "BASE64('fooba') = 'Zm9vYmE=' (RFC 4648 §10).",
+      "input": "fooba",
+      "opts": {},
+      "expected": "Zm9vYmE=",
+      "mode": "encode"
+    },
+    {
+      "id": "rfc4648-7-foobar",
+      "comment": "BASE64('foobar') = 'Zm9vYmFy' (RFC 4648 §10).",
+      "input": "foobar",
+      "opts": {},
+      "expected": "Zm9vYmFy",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-foobar",
+      "comment": "Decoding the canonical 'foobar' encoded string.",
+      "input": "Zm9vYmFy",
+      "opts": {},
+      "expected": "foobar",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-with-whitespace",
+      "comment": "Decoder tolerates internal whitespace (common in line-wrapped Base64).",
+      "input": "Zm9v\nYmFy",
+      "opts": {},
+      "expected": "foobar",
+      "mode": "decode"
+    },
+    {
+      "id": "hello-world",
+      "comment": "Common 'Hello, World!' canary.",
+      "input": "Hello, World!",
+      "opts": {},
+      "expected": "SGVsbG8sIFdvcmxkIQ==",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode",
+      "comment": "Multi-byte UTF-8 characters round-trip.",
+      "input": "héllo 🔒",
+      "opts": {},
+      "expected": "aMOpbGxvIPCflJI=",
+      "mode": "encode"
+    }
+  ]
+}
