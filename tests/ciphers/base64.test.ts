@@ -44,3 +44,10 @@ describe('base64 — error handling', () => {
     expect(() => base64.decode!('!!!notbase64!!!', {})).toThrow();
   });
 });
+
+describe('base64 — spec metadata', () => {
+  it('has the bit-grouping viz registered', () => {
+    expect(base64.viz).toBeDefined();
+    expect(typeof base64.viz).toBe('function');
+  });
+});

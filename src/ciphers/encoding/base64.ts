@@ -42,4 +42,5 @@ export const base64: CipherSpec<Base64Opts> = {
   ],
   encode,
   decode,
+  viz: () => import('./base64.viz.svelte'),
 };
