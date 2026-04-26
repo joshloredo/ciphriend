@@ -1,0 +1,43 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# builds & caches
+dist/
+.astro/
+.svelte-kit/
+.vite/
+.turbo/
+
+# wrangler / cloudflare
+.wrangler/
+.dev.vars
+
+# environment
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+
+# editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# testing
+coverage/
+
+# misc
+*.tsbuildinfo
