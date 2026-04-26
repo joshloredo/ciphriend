@@ -1,0 +1,64 @@
+{
+  "source": "Wikipedia: Affine cipher (https://en.wikipedia.org/wiki/Affine_cipher) + manually verified by tracing y = (a·x + b) mod 26.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "wiki-canonical-encode",
+      "comment": "The canonical Wikipedia example: AFFINECIPHER with a=5, b=8 → IHHWVCSWFRCP.",
+      "input": "AFFINECIPHER",
+      "opts": { "a": 5, "b": 8 },
+      "expected": "IHHWVCSWFRCP",
+      "mode": "encode"
+    },
+    {
+      "id": "wiki-canonical-decode",
+      "comment": "Round-trip of the Wikipedia example.",
+      "input": "IHHWVCSWFRCP",
+      "opts": { "a": 5, "b": 8 },
+      "expected": "AFFINECIPHER",
+      "mode": "decode"
+    },
+    {
+      "id": "a-1-is-caesar",
+      "comment": "When a=1, Affine reduces to Caesar with shift=b.",
+      "input": "HELLO",
+      "opts": { "a": 1, "b": 3 },
+      "expected": "KHOOR",
+      "mode": "encode"
+    },
+    {
+      "id": "a-25-negates",
+      "comment": "a=25 multiplies by -1 mod 26: H(7) → T(19), E(4) → W(22), L(11) → P(15), O(14) → M(12).",
+      "input": "HELLO",
+      "opts": { "a": 25, "b": 0 },
+      "expected": "TWPPM",
+      "mode": "encode"
+    },
+    {
+      "id": "case-preserved",
+      "comment": "Mixed case is preserved per character.",
+      "input": "Hello",
+      "opts": { "a": 5, "b": 8 },
+      "expected": "Rclla",
+      "mode": "encode"
+    },
+    {
+      "id": "punctuation-passthrough",
+      "comment": "Non-letters pass through unchanged.",
+      "input": "Hello, World!",
+      "opts": { "a": 5, "b": 8 },
+      "expected": "Rclla, Oaplx!",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": { "a": 5, "b": 8 },
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}

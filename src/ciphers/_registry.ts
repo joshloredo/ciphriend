@@ -4,6 +4,7 @@ import { rot13 } from './classical/rot13';
 import { atbash } from './classical/atbash';
 import { vigenere } from './classical/vigenere';
 import { railFence } from './classical/rail-fence';
+import { affine } from './classical/affine';
 import { base64 } from './encoding/base64';
 import { hex } from './encoding/hex';
 import { url } from './encoding/url';
@@ -28,6 +29,7 @@ export const ciphers: CipherSpec[] = [
   atbash as CipherSpec,
   vigenere as CipherSpec,
   railFence as CipherSpec,
+  affine as CipherSpec,
   base64 as CipherSpec,
   hex as CipherSpec,
   url as CipherSpec,
