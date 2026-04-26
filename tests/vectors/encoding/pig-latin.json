@@ -1,0 +1,88 @@
+{
+  "source": "Hand-written; standard Pig Latin rules — vowel-start words append 'way', consonant-start words move the leading consonant cluster to the end and append 'ay'. Y is a vowel except at the start of a word.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "single-consonant",
+      "comment": "Single leading consonant moved to end + 'ay'.",
+      "input": "hello",
+      "opts": {},
+      "expected": "ellohay",
+      "mode": "encode"
+    },
+    {
+      "id": "consonant-cluster",
+      "comment": "Multi-letter consonant cluster moved as a unit.",
+      "input": "string",
+      "opts": {},
+      "expected": "ingstray",
+      "mode": "encode"
+    },
+    {
+      "id": "vowel-start",
+      "comment": "Vowel-start gets 'way' appended without moving anything.",
+      "input": "apple",
+      "opts": {},
+      "expected": "appleway",
+      "mode": "encode"
+    },
+    {
+      "id": "y-as-consonant-at-start",
+      "comment": "Y at the very start is a consonant; everything-up-to-first-vowel rule applies.",
+      "input": "yellow",
+      "opts": {},
+      "expected": "ellowyay",
+      "mode": "encode"
+    },
+    {
+      "id": "y-as-vowel-mid-word",
+      "comment": "Y mid-word counts as a vowel for cluster termination.",
+      "input": "my",
+      "opts": {},
+      "expected": "ymay",
+      "mode": "encode"
+    },
+    {
+      "id": "capitalization-preserved",
+      "comment": "Capital letter at the start of the word transfers to the new first letter.",
+      "input": "Hello",
+      "opts": {},
+      "expected": "Ellohay",
+      "mode": "encode"
+    },
+    {
+      "id": "punctuation-stays-attached",
+      "comment": "Trailing punctuation remains attached to the word.",
+      "input": "hello, friend!",
+      "opts": {},
+      "expected": "ellohay, iendfray!",
+      "mode": "encode"
+    },
+    {
+      "id": "multi-word",
+      "comment": "Each word is transformed independently; whitespace is preserved.",
+      "input": "Hello friend",
+      "opts": {},
+      "expected": "Ellohay iendfray",
+      "mode": "encode"
+    },
+    {
+      "id": "all-vowels",
+      "comment": "Sentence with all vowel-start words.",
+      "input": "apple of my eye",
+      "opts": {},
+      "expected": "appleway ofway ymay eyeway",
+      "mode": "encode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}
