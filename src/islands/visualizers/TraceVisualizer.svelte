@@ -49,6 +49,7 @@
     transforms.length > MAX_VISIBLE ? transforms.slice(0, MAX_VISIBLE) : transforms,
   );
   let truncated = $derived(transforms.length > MAX_VISIBLE);
+  let hasOps = $derived(visibleTransforms.some((t) => t.op !== undefined));
 </script>
 
 <div class="space-y-3">
@@ -75,7 +76,7 @@
           {@const active = i < step}
           <span
             class={[
-              'min-w-[1.25rem] text-center px-1 py-0.5 rounded-sm border-l-2 transition-all duration-150',
+              'min-w-[1.5rem] text-center px-1 py-0.5 rounded-sm border-l-2 transition-all duration-150',
               active ? 'opacity-100 border-primary text-foreground' : 'opacity-40 border-transparent',
             ]}
             title={t.detail ?? ''}
@@ -85,12 +86,30 @@
           </span>
         {/each}
       </div>
+      {#if hasOps}
+        <div
+          class="flex gap-0.5 mb-1 text-[0.65rem] leading-none tabular-nums select-none"
+          aria-hidden="true"
+        >
+          {#each visibleTransforms as t, i}
+            {@const active = i < step}
+            <span
+              class={[
+                'min-w-[1.5rem] text-center px-1 py-1 rounded-sm transition-all duration-150',
+                active ? 'text-primary/80' : 'text-muted-foreground/50',
+              ]}
+            >
+              {t.op ?? ''}
+            </span>
+          {/each}
+        </div>
+      {/if}
       <div class="flex gap-0.5">
         {#each visibleTransforms as t, i}
           {@const active = i < step}
           <span
             class={[
-              'min-w-[1.25rem] text-center px-1 py-0.5 rounded-sm border-l-2 transition-all duration-150',
+              'min-w-[1.5rem] text-center px-1 py-0.5 rounded-sm border-l-2 transition-all duration-150',
               active
                 ? 'opacity-100 border-primary text-primary'
                 : 'opacity-40 border-transparent text-muted-foreground',

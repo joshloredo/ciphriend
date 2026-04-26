@@ -111,6 +111,18 @@ describe('caesar.trace', () => {
     const transforms = caesar.trace!('K', o(3), 'decode');
     expect(transforms[0]?.detail).toContain('-3');
   });
+
+  it('sets compact op label for the middle visualization row', () => {
+    const transforms = caesar.trace!('Ab!', o(3), 'encode');
+    expect(transforms[0]?.op).toBe('+3');
+    expect(transforms[1]?.op).toBe('+3');
+    expect(transforms[2]?.op).toBe('·');
+  });
+
+  it('op label flips sign in decode mode', () => {
+    const transforms = caesar.trace!('K', o(3), 'decode');
+    expect(transforms[0]?.op).toBe('-3');
+  });
 });
 
 describe('caesar.spec metadata', () => {

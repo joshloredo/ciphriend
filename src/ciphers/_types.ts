@@ -36,6 +36,11 @@ export interface OptionField {
  * `outIndex` is set when the output position differs from the input position
  * (transpositions like Rail Fence). `group` is a small integer used by the
  * generic visualizer for color grouping (e.g., Vigenère key-cycle position).
+ *
+ * `op` is the compact operation glyph shown between input and output rows
+ * in the generic visualizer (e.g., "+3" for Caesar, "K(+10)" for Vigenère,
+ * "↔" for Atbash). Use "·" or "—" for passthrough characters so columns
+ * stay aligned. `detail` is the verbose hover/aria-label version.
  */
 export interface CharTransform {
   inIndex: number;
@@ -43,6 +48,7 @@ export interface CharTransform {
   outChar: string;
   outIndex?: number;
   detail?: string;
+  op?: string;
   group?: number;
 }
 

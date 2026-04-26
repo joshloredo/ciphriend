@@ -21,6 +21,7 @@ function decode(input: string, opts: CaesarOpts): string {
 function trace(input: string, opts: CaesarOpts, mode: Mode): CharTransform[] {
   const effectiveShift = mode === 'decode' ? -opts.shift : opts.shift;
   const sign = effectiveShift >= 0 ? '+' : '';
+  const opLabel = `${sign}${effectiveShift}`;
   const out: CharTransform[] = [];
   for (let i = 0; i < input.length; i++) {
     const inChar = input[i]!;
@@ -32,8 +33,9 @@ function trace(input: string, opts: CaesarOpts, mode: Mode): CharTransform[] {
       inChar,
       outChar,
       detail: isLetterChar
-        ? `shift ${sign}${effectiveShift}`
+        ? `shift ${opLabel}`
         : 'passthrough (non-letter)',
+      op: isLetterChar ? opLabel : '·',
       group: 0,
     });
   }
