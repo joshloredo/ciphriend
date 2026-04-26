@@ -1,0 +1,72 @@
+{
+  "source": "Wikipedia: Polybius square (https://en.wikipedia.org/wiki/Polybius_square) — standard 5×5 with I/J merged.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "hello",
+      "comment": "Each letter encoded as its (row, col) in the grid.",
+      "input": "HELLO",
+      "opts": {},
+      "expected": "23 15 31 31 34",
+      "mode": "encode"
+    },
+    {
+      "id": "polybius",
+      "comment": "Eight-letter cipher name through itself.",
+      "input": "POLYBIUS",
+      "opts": {},
+      "expected": "35 34 31 54 12 24 45 43",
+      "mode": "encode"
+    },
+    {
+      "id": "i-and-j-share-cell",
+      "comment": "I and J both encode to (2, 4).",
+      "input": "IJ",
+      "opts": {},
+      "expected": "24 24",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-roundtrip",
+      "comment": "Decode recovers HELLO from the canonical encoding.",
+      "input": "23 15 31 31 34",
+      "opts": {},
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-tolerates-no-spaces",
+      "comment": "Decoder accepts a continuous digit stream.",
+      "input": "2315313134",
+      "opts": {},
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-j-becomes-i",
+      "comment": "Decoded output never contains J — the (2, 4) cell decodes to I.",
+      "input": "24",
+      "opts": {},
+      "expected": "I",
+      "mode": "decode"
+    },
+    {
+      "id": "non-letter-input-skipped",
+      "comment": "Punctuation, digits, and whitespace are dropped on encode.",
+      "input": "Hi! 42",
+      "opts": {},
+      "expected": "23 24",
+      "mode": "encode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}
