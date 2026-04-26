@@ -22,7 +22,7 @@ Ciphriend ("Cipher" + "Friend") is a client-side web tool for encoding, decoding
 | Persistence | None. Stateless. Keys ephemeral, tab-scoped only |
 | Hosting | Cloudflare Pages, GitHub Actions deploy |
 | Aesthetic | shadcn-svelte + Tailwind. Theme = Sodium Lab (warm dark + amber). Display mono = JetBrains Mono. |
-| Testing | Vitest, reference vectors per cipher, runs in CI |
+| Testing | Vitest + fast-check property tests, vendored authoritative vectors (Wycheproof/NIST/RFC) per cipher, tiered (default/thorough/full), runs in CI. Load-bearing alongside the privacy invariants. |
 | Visualizations | Generic trace-based renderer + custom Svelte slot per cipher. Playback: live default + ▶ stepped. v1 covers 8 of 13. |
 
 ## Architecture
@@ -232,17 +232,51 @@ Keys live only in component state; never persisted, never URL-shared.
 - **Malformed URL fragment**: ignore unknown keys; fall back to defaults.
 - **No JS**: cipher pages render a static notice. Static pages (about, privacy) work without JS.
 
-## Testing strategy
+## Test data strategy (load-bearing)
 
-- One `*.test.ts` per cipher in `tests/ciphers/`.
-- Reference vectors (NIST for AES-GCM/SHA-256; canonical examples for classical).
-- Round-trip property test: `decode(encode(x, opts), opts) === x` for ~100 random strings (seeded).
-- Edge cases: empty, all-whitespace, Unicode, very long.
-- Trace correctness: `transforms.map(t => t.outChar).join('') === expectedOutput`.
+Cipher correctness is **the** load-bearing concern of this project — alongside the privacy invariants. A bug in a cipher that ships silently produces wrong output users may trust, which is materially worse than nearly any other failure mode this codebase could have. The test infrastructure must be designed for that reality, not retrofitted to it.
+
+### Layered defense (all four required per cipher)
+
+1. **Hand-written reference vectors**, cited from a credible source, stored as JSON in `tests/vectors/<source>/<id>.json`. At least 5 per cipher covering the canonical case + edge cases.
+2. **Vendored authoritative vectors** for any cipher with a formal spec. Pinned to specific commits / version / RFC numbers, never to `main`/`latest`.
+3. **Property-based tests** via `fast-check`, using shared helpers in `tests/helpers/properties.ts` (`roundTrip`, `involution`, `determinism`, `traceMatchesOutput`).
+4. **Edge-case coverage**: empty, all-whitespace, Unicode (combining + emoji), single char, long input (≥10 KB, flagged `long-message` so it's deferred to thorough+ tiers).
+
+### Vector sources
+
+| Subdir | Source | License | Use |
+|---|---|---|---|
+| `tests/vectors/wycheproof/` | [C2SP/wycheproof](https://github.com/C2SP/wycheproof) | Apache 2.0 | AES-GCM, AES-CBC, HMAC, SHA-2, ECDSA, RSA. Adversarial — gold standard. |
+| `tests/vectors/nist/` | [NIST CAVP](https://csrc.nist.gov/projects/cryptographic-algorithm-validation-program) | Public domain | AES, SHA-2/3, HMAC. Larger and slower than Wycheproof; more thorough. |
+| `tests/vectors/rfc/` | IETF RFCs (4648 §10 Base64, 6234 SHA-2, 3174 SHA-1) | IETF (test vectors are fair use) | Encodings + hashes, definitive. |
+| `tests/vectors/classical/` | Wikipedia + CrypTool / dCode cross-validation captures | Captured outputs (cite per file) | Caesar, Vigenère, Atbash, Rail Fence, Morse, etc. |
+
+Each file declares its own header (`source`, `license`, `version`, `imported`). Format spec in `tests/vectors/README.md`.
+
+### Test tiers
+
+| Script | Vectors | Property iterations | Use |
+|---|---|---|---|
+| `npm test` | All except flags `thorough-only` / `full-only` / `long-message` | 200 | Every PR (CI-enforced) |
+| `npm run test:thorough` | + `thorough-only` and `long-message` | 5000 | Pre-release / nightly |
+| `npm run test:full` | Everything (incl. `full-only`, e.g. cross-impl validation) | 5000 | Manual / paranoia |
+
+`npm test` AND `npm run test:thorough` MUST both be green before any production deploy. Both also gate the merge-to-main checks.
+
+### Pinning policy
+
+- Vendor files reference upstream by commit hash / release tag / document number — never `main`/`latest`.
+- Vendor updates are deliberate, separately-reviewed PRs.
+- If our implementation regresses against an unchanged vector, the bug is in our implementation. Investigate the regression — do NOT update the vector to match the new (broken) output.
+
+### Other test surfaces
+
 - URL fragment serialize/parse round-trip.
-- Ephemeral fields excluded from URL.
+- Ephemeral fields (keys/passwords) excluded from URL fragments.
+- Trace-output drift: `traceMatchesOutput` for every cipher with a `trace()` function.
 
-CI: vitest on every PR (required check). Build + deploy on push to main.
+CI: `npm test` on every PR (required check). Build + deploy on push to `main`. `npm run test:thorough` runs in the deploy workflow as a release gate.
 
 Out of test scope for v1: visual regression, E2E browser automation.
 
@@ -318,9 +352,27 @@ JetBrains Mono self-hosted in `public/fonts/` (no third-party requests).
 16. Verify: `npm install`, `npm run dev`, `npm test`, `npm run build`.
 17. **Stop. Hand back for review.**
 
+### Chunk A.5 — Test-data framework (BLOCKS Chunk B)
+
+This is its own chunk because it must be in place before any new cipher lands. Adding ciphers without it would create a backlog of "we'll add real vectors later" that never gets paid down.
+
+1. Add `fast-check` as a dev dependency.
+2. Create `tests/vectors/` with subdirs `wycheproof/`, `nist/`, `rfc/`, `classical/` and a load-bearing `README.md` documenting sources, licenses, pinning policy, file format, and the import procedure for each vendor.
+3. Write `tests/helpers/vector-runner.ts` (loadVectors, runnableVectors, tier filtering) and `tests/helpers/properties.ts` (roundTrip, involution, determinism, traceMatchesOutput).
+4. Add `npm run test:thorough` (TEST_TIER=thorough, PROP_ITERATIONS=5000) and `npm run test:full` scripts.
+5. Convert Caesar's existing tests to consume `tests/vectors/classical/caesar.json` via the runner and use `roundTrip` / `involution` / `traceMatchesOutput` from `properties.ts`. This proves the framework end-to-end.
+6. Update CLAUDE.md and this spec to make the four-tier defense (hand vectors + vendored vectors + property tests + edge cases) a release-blocking invariant.
+
 ### Chunk B — Remaining v1 ciphers
 
-ROT13, Atbash, Vigenère (trace). Hex, URL, Binary (no viz). AES-GCM, SHA-256 (NIST vectors). Wire home-page search.
+Each cipher in this chunk follows the recipe in CLAUDE.md exactly: spec + registry + vectors JSON + tests file using the helpers + property tests + edge cases. No exceptions.
+
+- **ROT13, Atbash, Vigenère** — classical with `trace()`. Vectors: hand-written from Wikipedia + cross-validated against CrypTool, stored in `tests/vectors/classical/`.
+- **Hex, URL, Binary** — encodings, no viz in v1. Vectors: hand-written + cross-checked against `encodeURIComponent`/`btoa`/`atob` for a small corpus.
+- **Base64** — vendor RFC 4648 §10 vectors.
+- **AES-GCM** — vendor Wycheproof `aes_gcm_test.json` (pinned commit). Hand vectors for the canonical "Hello, World!" cases.
+- **SHA-256** — vendor Wycheproof `sha256_test.json` + NIST CAVP short-message vectors (long-message flagged `thorough-only`).
+- Home-page search/filter UI.
 
 ### Chunk C — Custom visualizations
 

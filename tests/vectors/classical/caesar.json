@@ -1,0 +1,96 @@
+{
+  "source": "Wikipedia: Caesar cipher (https://en.wikipedia.org/wiki/Caesar_cipher) + cross-checked against CrypTool 2 (https://www.cryptool.org/)",
+  "license": "Captured outputs; see source URLs for original works.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "wiki-canonical-encode",
+      "comment": "The canonical example from the Wikipedia article: shift of 3.",
+      "input": "HELLO",
+      "opts": { "shift": 3 },
+      "expected": "KHOOR",
+      "mode": "encode"
+    },
+    {
+      "id": "wiki-canonical-decode",
+      "comment": "Decoding the canonical example.",
+      "input": "KHOOR",
+      "opts": { "shift": 3 },
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "wiki-mixed-case",
+      "comment": "Case preservation per the Wikipedia article's example.",
+      "input": "The quick brown fox jumps over the lazy dog",
+      "opts": { "shift": 3 },
+      "expected": "Wkh txlfn eurzq ira mxpsv ryhu wkh odcb grj",
+      "mode": "encode"
+    },
+    {
+      "id": "rot13-self-inverse",
+      "comment": "Caesar with shift=13 is ROT13 — applying twice returns the original.",
+      "input": "Hello, World!",
+      "opts": { "shift": 13 },
+      "expected": "Uryyb, Jbeyq!",
+      "mode": "encode"
+    },
+    {
+      "id": "wrap-around-end",
+      "comment": "XYZ + shift 3 wraps past Z to ABC.",
+      "input": "XYZ",
+      "opts": { "shift": 3 },
+      "expected": "ABC",
+      "mode": "encode"
+    },
+    {
+      "id": "wrap-around-start",
+      "comment": "ABC + shift -3 wraps past A to XYZ.",
+      "input": "ABC",
+      "opts": { "shift": -3 },
+      "expected": "XYZ",
+      "mode": "encode"
+    },
+    {
+      "id": "shift-zero-identity",
+      "comment": "Shift of zero is the identity transformation.",
+      "input": "The quick brown fox.",
+      "opts": { "shift": 0 },
+      "expected": "The quick brown fox.",
+      "mode": "encode"
+    },
+    {
+      "id": "shift-mod-26",
+      "comment": "Shift larger than 26 normalizes via modulo (29 mod 26 = 3).",
+      "input": "ABC",
+      "opts": { "shift": 29 },
+      "expected": "DEF",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode-passthrough",
+      "comment": "Non-ASCII characters pass through unchanged; only ASCII letters shift.",
+      "input": "Héllo 🔒",
+      "opts": { "shift": 3 },
+      "expected": "Kéoor 🔒",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input is empty output.",
+      "input": "",
+      "opts": { "shift": 5 },
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-reverses-encode",
+      "comment": "Decoding GHI with shift=3 recovers DEF (the input that produced GHI when encoded).",
+      "input": "GHI",
+      "opts": { "shift": 3 },
+      "expected": "DEF",
+      "mode": "decode"
+    }
+  ]
+}

@@ -1,86 +1,40 @@
 import { describe, it, expect } from 'vitest';
 import { caesar, type CaesarOpts } from '../../src/ciphers/classical/caesar';
+import { loadVectors, runnableVectors } from '../helpers/vector-runner';
+import { roundTrip, involution, traceMatchesOutput, fc } from '../helpers/properties';
 
 const o = (shift: number): CaesarOpts => ({ shift });
 
-describe('caesar.encode', () => {
-  it('canonical example: HELLO with shift=3 → KHOOR', () => {
-    expect(caesar.encode!('HELLO', o(3))).toBe('KHOOR');
+/* -------------------------------------------------------------------------- */
+/* Hand-written reference vectors (loaded from tests/vectors/classical/)       */
+/* -------------------------------------------------------------------------- */
+
+const file = loadVectors<CaesarOpts>('classical/caesar.json');
+
+describe('caesar — vendored reference vectors', () => {
+  it('vector file declares its source', () => {
+    expect(file.source).toMatch(/Wikipedia/);
   });
 
-  it('preserves case', () => {
-    expect(caesar.encode!('Hello', o(3))).toBe('Khoor');
-  });
-
-  it('passes non-letters through unchanged', () => {
-    expect(caesar.encode!('Hello, World!', o(3))).toBe('Khoor, Zruog!');
-  });
-
-  it('handles wrap-around at end of alphabet', () => {
-    expect(caesar.encode!('XYZ', o(3))).toBe('ABC');
-  });
-
-  it('handles negative shifts', () => {
-    expect(caesar.encode!('ABC', o(-3))).toBe('XYZ');
-  });
-
-  it('handles shifts larger than the alphabet', () => {
-    expect(caesar.encode!('ABC', o(29))).toBe('DEF');
-  });
-
-  it('shift=0 is identity', () => {
-    expect(caesar.encode!('Hello, World!', o(0))).toBe('Hello, World!');
-  });
-
-  it('handles empty string', () => {
-    expect(caesar.encode!('', o(3))).toBe('');
-  });
-
-  it('handles Unicode (passes non-ASCII through)', () => {
-    // H→K, é stays (non-ASCII), l→o, l→o, o→r, space stays, lock stays
-    expect(caesar.encode!('Héllo 🔒', o(3))).toBe('Kéoor 🔒');
-  });
+  for (const v of runnableVectors(file)) {
+    const mode = v.mode ?? 'encode';
+    it(`${v.id} (${mode}): ${v.comment ?? ''}`, () => {
+      const fn = mode === 'encode' ? caesar.encode! : caesar.decode!;
+      expect(fn(v.input, v.opts)).toBe(v.expected);
+    });
+  }
 });
 
-describe('caesar.decode', () => {
-  it('decode is the inverse of encode', () => {
-    expect(caesar.decode!('KHOOR', o(3))).toBe('HELLO');
-  });
+/* -------------------------------------------------------------------------- */
+/* Spec metadata + trace-specific assertions                                   */
+/* -------------------------------------------------------------------------- */
 
-  it('matches encode with negative shift', () => {
-    expect(caesar.decode!('ABC', o(3))).toBe(caesar.encode!('ABC', o(-3)));
-  });
-});
-
-describe('caesar round-trip property', () => {
-  const seed = 0x1234abcd;
-  let state = seed;
-  // mulberry32 — small deterministic PRNG for reproducible randomness
-  function rand() {
-    state |= 0; state = (state + 0x6D2B79F5) | 0;
-    let t = state;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  }
-  function randomString(len: number): string {
-    let s = '';
-    for (let i = 0; i < len; i++) {
-      s += String.fromCharCode(32 + Math.floor(rand() * 95));
-    }
-    return s;
-  }
-
-  it('decode(encode(x, k), k) === x for 200 random strings × 13 shifts', () => {
-    for (let i = 0; i < 200; i++) {
-      const len = 1 + Math.floor(rand() * 100);
-      const input = randomString(len);
-      for (let shift = -6; shift <= 6; shift++) {
-        const encoded = caesar.encode!(input, o(shift));
-        const decoded = caesar.decode!(encoded, o(shift));
-        expect(decoded).toBe(input);
-      }
-    }
+describe('caesar — spec metadata', () => {
+  it('has the expected shape', () => {
+    expect(caesar.id).toBe('caesar');
+    expect(caesar.category).toBe('classical');
+    expect(caesar.modes).toEqual(expect.arrayContaining(['encode', 'decode']));
+    expect(caesar.options.find((opt) => opt.id === 'shift')).toBeDefined();
   });
 });
 
@@ -88,15 +42,6 @@ describe('caesar.trace', () => {
   it('emits one transform per input character', () => {
     const transforms = caesar.trace!('Hi!', o(3), 'encode');
     expect(transforms).toHaveLength(3);
-  });
-
-  it('outChar concatenated equals encode output', () => {
-    const input = 'Hello, World!';
-    const opts = o(3);
-    const expected = caesar.encode!(input, opts);
-    const transforms = caesar.trace!(input, opts, 'encode');
-    const fromTrace = transforms.map(t => t.outChar).join('');
-    expect(fromTrace).toBe(expected);
   });
 
   it('records detail for letters and group=0 for shift', () => {
@@ -125,11 +70,32 @@ describe('caesar.trace', () => {
   });
 });
 
-describe('caesar.spec metadata', () => {
-  it('has the expected shape', () => {
-    expect(caesar.id).toBe('caesar');
-    expect(caesar.category).toBe('classical');
-    expect(caesar.modes).toEqual(expect.arrayContaining(['encode', 'decode']));
-    expect(caesar.options.find(o => o.id === 'shift')).toBeDefined();
+/* -------------------------------------------------------------------------- */
+/* Property tests via fast-check                                               */
+/* -------------------------------------------------------------------------- */
+
+describe('caesar — properties', () => {
+  const shiftArb = fc.integer({ min: -25, max: 25 }).map<CaesarOpts>((shift) => ({ shift }));
+
+  it('round-trip: decode(encode(x, k), k) === x', () => {
+    roundTrip<CaesarOpts>({
+      encode: (input, opts) => caesar.encode!(input, opts) as string,
+      decode: (input, opts) => caesar.decode!(input, opts) as string,
+      opts: shiftArb,
+    });
+  });
+
+  it('shift=13 is its own inverse (ROT13 property)', () => {
+    involution({
+      apply: (input) => caesar.encode!(input, { shift: 13 }) as string,
+    });
+  });
+
+  it('trace().outChar joined === encode()', () => {
+    traceMatchesOutput<CaesarOpts, { outChar: string }>({
+      encode: (input, opts) => caesar.encode!(input, opts) as string,
+      trace: (input, opts) => caesar.trace!(input, opts, 'encode'),
+      opts: shiftArb,
+    });
   });
 });

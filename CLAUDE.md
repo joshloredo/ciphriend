@@ -119,15 +119,48 @@ If you find yourself wanting to break one of these, STOP and ask the user. Don't
 - **Friendly tone in microcopy.** Button labels, empty states, error messages — write them like a friend, not a CI log. The product is named Ciphriend; act like it.
 - **Comments are rare.** Code names should explain WHAT. Reserve comments for non-obvious WHY (a hidden invariant, a workaround for a specific bug). Don't write JSDoc for every function.
 
-## Testing Posture
+## Testing Posture (load-bearing)
 
-- **Every cipher MUST ship with reference-vector tests** in `tests/ciphers/<id>.test.ts`. Use canonical examples (NIST for AES-GCM/SHA-256, well-known classical examples for the rest).
-- **Every reversible cipher MUST ship with a round-trip property test:** `decode(encode(x, opts), opts) === x` for ~100 seeded random strings.
-- **Trace correctness:** if a cipher exports `trace()`, add an assertion that `transforms.map(t => t.outChar).join('') === expectedOutput` for the canonical example.
-- **PRs that add a cipher without these tests are not mergeable.**
-- **Edge cases:** empty string, all-whitespace, Unicode (emoji, combining chars), very long input.
+Cipher correctness is **the** load-bearing concern of this project. A bug in a cipher that ships silently produces wrong output that users may trust — that is materially worse than almost any other class of bug we could ship. Treat the test infrastructure with the same gravity as the privacy invariants.
 
-Out of scope for v1: visual regression testing, E2E browser automation.
+### Layered defense
+
+Every cipher in production must satisfy ALL FOUR of:
+
+1. **Hand-written reference vectors**, cited from a credible source, stored in `tests/vectors/<source>/<id>.json` and consumed via `loadVectors()` + `runnableVectors()` from `tests/helpers/vector-runner.ts`. At least 5 vectors covering the canonical case + edge cases.
+2. **Vendored authoritative vectors** for any cipher with a formal spec (AES-GCM → Wycheproof; SHA-256 → Wycheproof + NIST CAVP; Base64 → RFC 4648 §10; etc.). Pinned to a specific commit/version. License files preserved.
+3. **Property-based tests** via `fast-check`, using the helpers in `tests/helpers/properties.ts`:
+   - `roundTrip()` for reversible ciphers
+   - `involution()` for self-inverse ciphers (Atbash, ROT13)
+   - `determinism()` for hashes and pure encodings
+   - `traceMatchesOutput()` whenever the cipher exports `trace()` — guards against drift between the visualizer and the engine.
+4. **Edge case coverage**: empty input, all-whitespace, Unicode (combining marks + emoji), single-character input, very long input (≥10 KB) flagged `["long-message"]` so it only runs at thorough+ tiers.
+
+### Test tiers
+
+| Script | Vectors run | Property iterations | Use |
+|---|---|---|---|
+| `npm test` | All except `flags: ["thorough-only", "full-only", "long-message"]` | 200 | Every PR (must pass before merge) |
+| `npm run test:thorough` | Adds `long-message` and `thorough-only` flagged vectors | 5000 | Pre-release / nightly |
+| `npm run test:full` | Adds `full-only` (cross-impl validation) | 5000 | Manual / paranoia |
+
+`npm test` AND `npm run test:thorough` MUST be green before any production deploy. CI runs `npm test` automatically on every PR.
+
+### Adding new test vectors
+
+- Vector files live in `tests/vectors/<wycheproof|nist|rfc|classical>/<file>.json`.
+- See `tests/vectors/README.md` for the file format and source-import procedures.
+- Vendor sources MUST be pinned to a specific commit hash, release tag, or document number — NEVER `main`/`latest`.
+- Each vector file's `source` field MUST identify exactly where the data came from; for classical-cipher captures, cite the URL of the tool used (CrypTool, dCode) and the date.
+- License files for vendored sources (Wycheproof's LICENSE, etc.) MUST be preserved verbatim alongside the vectors.
+
+### Drift detection
+
+If our implementation starts failing a vector that previously passed, the bug is in our implementation. Do NOT update the vector to match the new (broken) output. Investigate the regression first.
+
+If a vendored upstream file has actually changed (Wycheproof releases an update, NIST republishes), that update is a deliberate, separately-reviewable PR — never combined with feature work.
+
+Out of scope for v1: visual regression testing, E2E browser automation. Both are good ideas for v2; both are over-engineering for v1.
 
 ## Visual Identity
 
@@ -139,13 +172,24 @@ Out of scope for v1: visual regression testing, E2E browser automation.
 
 ## Adding a New Cipher (the recipe)
 
+A cipher PR is **not mergeable** until ALL of these are satisfied. There are no exceptions for "just for now" or "we'll add tests later."
+
 1. Create `src/ciphers/<category>/<id>.ts` exporting a `CipherSpec`.
-2. Add reference vectors to `tests/ciphers/<id>.test.ts`.
-3. Register the spec in `src/ciphers/_registry.ts`.
-4. **Visualization (optional):**
-   - Substitution-style? Add a `trace()` function. The generic `<TraceVisualizer>` renders it for free.
+2. Register the spec in `src/ciphers/_registry.ts`.
+3. **Vectors** (`tests/vectors/<source>/<id>.json`):
+   - At least 5 hand-written reference vectors, each citing a source in its `comment` field.
+   - For ciphers with formal specs (AES, SHA, HMAC, Base64), vendor the relevant authoritative file (Wycheproof / NIST / RFC) — see `tests/vectors/README.md`.
+4. **Tests** (`tests/ciphers/<id>.test.ts`):
+   - Loop through vectors via `loadVectors()` + `runnableVectors()` from `tests/helpers/vector-runner.ts`.
+   - Property test the cipher's invariant via `roundTrip()` / `involution()` / `determinism()` from `tests/helpers/properties.ts`.
+   - If the cipher exports `trace()`, also assert `traceMatchesOutput()`.
+   - Cover edge cases: empty input, all-whitespace, Unicode, single char, long input.
+5. **Visualization (optional)**:
+   - Substitution-style? Add a `trace()` function (set `op` for the middle row). The generic `<TraceVisualizer>` renders it for free.
    - Needs something custom? Drop a `<id>.viz.svelte` next to the engine file and point `viz` at it.
-5. That's it. No other files should need editing. **If you find yourself editing other files, the abstraction is wrong — flag it before continuing.**
+6. Verify locally: BOTH `npm test` AND `npm run test:thorough` pass.
+
+**If you find yourself editing files outside `src/ciphers/<category>/`, `tests/ciphers/`, `tests/vectors/`, and `src/ciphers/_registry.ts`, the abstraction is wrong — flag it before continuing.**
 
 ## Deployment
 
