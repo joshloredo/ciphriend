@@ -1,0 +1,80 @@
+{
+  "source": "ITU-R / NATO standard phonetic alphabet (https://en.wikipedia.org/wiki/NATO_phonetic_alphabet).",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "sos",
+      "comment": "Three letters spell out as three NATO words.",
+      "input": "SOS",
+      "opts": {},
+      "expected": "Sierra Oscar Sierra",
+      "mode": "encode"
+    },
+    {
+      "id": "hello",
+      "comment": "Mixed case is uppercased internally before lookup.",
+      "input": "Hello",
+      "opts": {},
+      "expected": "Hotel Echo Lima Lima Oscar",
+      "mode": "encode"
+    },
+    {
+      "id": "multi-word",
+      "comment": "Word breaks become ' / '.",
+      "input": "Hi there",
+      "opts": {},
+      "expected": "Hotel India / Tango Hotel Echo Romeo Echo",
+      "mode": "encode"
+    },
+    {
+      "id": "digits",
+      "comment": "Digits 0-9 are encoded as their phonetic forms.",
+      "input": "73",
+      "opts": {},
+      "expected": "Seven Three",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-roundtrip",
+      "comment": "Decode recovers the original (uppercased).",
+      "input": "Hotel Echo Lima Lima Oscar",
+      "opts": {},
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-case-insensitive",
+      "comment": "Decoder accepts any case for the phonetic words.",
+      "input": "alpha BRAVO Charlie",
+      "opts": {},
+      "expected": "ABC",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-with-word-separator",
+      "comment": "Decoder splits on '/' for word boundaries.",
+      "input": "Hotel India / Tango Hotel Echo Romeo Echo",
+      "opts": {},
+      "expected": "HI THERE",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-unknown-token",
+      "comment": "Unknown tokens become '?'.",
+      "input": "Alpha Wrongo Charlie",
+      "opts": {},
+      "expected": "A?C",
+      "mode": "decode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}

@@ -14,6 +14,7 @@ import { morse } from './fun/morse';
 import { reverse } from './fun/reverse';
 import { spongebob } from './fun/spongebob';
 import { leet } from './fun/leet';
+import { nato } from './fun/nato';
 import { frequency } from './analysis/frequency';
 
 /**
@@ -36,6 +37,7 @@ export const ciphers: CipherSpec[] = [
   reverse as CipherSpec,
   spongebob as CipherSpec,
   leet as CipherSpec,
+  nato as CipherSpec,
   frequency as CipherSpec,
 ];
 
