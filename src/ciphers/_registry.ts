@@ -1,5 +1,8 @@
 import type { CipherSpec } from './_types';
 import { caesar } from './classical/caesar';
+import { rot13 } from './classical/rot13';
+import { atbash } from './classical/atbash';
+import { vigenere } from './classical/vigenere';
 
 /**
  * The single source of truth for which ciphers exist.
@@ -7,6 +10,9 @@ import { caesar } from './classical/caesar';
  */
 export const ciphers: CipherSpec[] = [
   caesar as CipherSpec,
+  rot13 as CipherSpec,
+  atbash as CipherSpec,
+  vigenere as CipherSpec,
 ];
 
 /** Look up a cipher by id. Used by route handlers and the workbench. */

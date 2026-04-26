@@ -1,0 +1,72 @@
+{
+  "source": "Wikipedia: ROT13 (https://en.wikipedia.org/wiki/ROT13) + cross-checked against Python's codecs.encode(s, 'rot_13')",
+  "license": "Captured outputs; see source URLs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "wiki-canonical",
+      "comment": "Canonical Wikipedia example.",
+      "input": "Hello, World!",
+      "opts": {},
+      "expected": "Uryyb, Jbeyq!",
+      "mode": "encode"
+    },
+    {
+      "id": "self-inverse",
+      "comment": "Decoding the canonical output recovers the original (ROT13 is its own inverse).",
+      "input": "Uryyb, Jbeyq!",
+      "opts": {},
+      "expected": "Hello, World!",
+      "mode": "decode"
+    },
+    {
+      "id": "wiki-pangram",
+      "comment": "Wikipedia's pangram example for ROT13.",
+      "input": "The quick brown fox jumps over the lazy dog.",
+      "opts": {},
+      "expected": "Gur dhvpx oebja sbk whzcf bire gur ynml qbt.",
+      "mode": "encode"
+    },
+    {
+      "id": "spoiler-prefix",
+      "comment": "ROT13 in its native habitat — Usenet spoiler protection.",
+      "input": "The answer is 42",
+      "opts": {},
+      "expected": "Gur nafjre vf 42",
+      "mode": "encode"
+    },
+    {
+      "id": "punctuation-passthrough",
+      "comment": "Digits, punctuation, and whitespace pass through unchanged.",
+      "input": "12 + 34 = 46?",
+      "opts": {},
+      "expected": "12 + 34 = 46?",
+      "mode": "encode"
+    },
+    {
+      "id": "case-preserved",
+      "comment": "Case is preserved per character.",
+      "input": "MixedCASE",
+      "opts": {},
+      "expected": "ZvkrqPNFR",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input is empty output.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode-passthrough",
+      "comment": "Non-ASCII characters pass through unchanged.",
+      "input": "Héllo 🔒",
+      "opts": {},
+      "expected": "Uéyyb 🔒",
+      "mode": "encode"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "source": "Wikipedia: Atbash (https://en.wikipedia.org/wiki/Atbash) + manually verified against the A↔Z, B↔Y, …, M↔N mapping.",
+  "license": "Captured outputs; see source URLs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "hello",
+      "comment": "Canonical short example.",
+      "input": "HELLO",
+      "opts": {},
+      "expected": "SVOOL",
+      "mode": "encode"
+    },
+    {
+      "id": "self-inverse",
+      "comment": "Atbash is involutive — applying twice returns the input.",
+      "input": "SVOOL",
+      "opts": {},
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "case-preserved",
+      "comment": "Mixed case is preserved per character.",
+      "input": "The quick brown fox",
+      "opts": {},
+      "expected": "Gsv jfrxp yildm ulc",
+      "mode": "encode"
+    },
+    {
+      "id": "fixed-points",
+      "comment": "M and N are fixed points in the Latin alphabet's Atbash mapping.",
+      "input": "MN mn",
+      "opts": {},
+      "expected": "NM nm",
+      "mode": "encode"
+    },
+    {
+      "id": "punctuation-passthrough",
+      "comment": "Digits, punctuation, and whitespace pass through unchanged.",
+      "input": "Hello, World! 123",
+      "opts": {},
+      "expected": "Svool, Dliow! 123",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input is empty output.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode-passthrough",
+      "comment": "Non-ASCII characters pass through unchanged. H→S, é stays, l→o, l→o, o→l.",
+      "input": "Héllo 🔒",
+      "opts": {},
+      "expected": "Séool 🔒",
+      "mode": "encode"
+    }
+  ]
+}

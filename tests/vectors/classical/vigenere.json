@@ -1,0 +1,80 @@
+{
+  "source": "Wikipedia: Vigenère cipher (https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher) + cross-checked against CrypTool 2.",
+  "license": "Captured outputs; see source URLs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "wiki-canonical-encode",
+      "comment": "The textbook example: ATTACK AT DAWN encoded with key LEMON.",
+      "input": "ATTACK AT DAWN",
+      "opts": { "key": "LEMON" },
+      "expected": "LXFOPV EF RNHR",
+      "mode": "encode"
+    },
+    {
+      "id": "wiki-canonical-decode",
+      "comment": "Decoding the textbook example with key LEMON.",
+      "input": "LXFOPV EF RNHR",
+      "opts": { "key": "LEMON" },
+      "expected": "ATTACK AT DAWN",
+      "mode": "decode"
+    },
+    {
+      "id": "key-as-A-is-identity",
+      "comment": "Key 'A' (shift 0) is the identity transformation.",
+      "input": "Plaintext stays the same.",
+      "opts": { "key": "A" },
+      "expected": "Plaintext stays the same.",
+      "mode": "encode"
+    },
+    {
+      "id": "non-letter-key-stripped",
+      "comment": "Non-letters in the key are ignored; 'L3M0N!' normalizes to 'LMN'.",
+      "input": "ATTACK",
+      "opts": { "key": "L3M0N!" },
+      "expected": "LFGLOX",
+      "mode": "encode"
+    },
+    {
+      "id": "case-preserved",
+      "comment": "Input case is preserved per character.",
+      "input": "Attack At Dawn",
+      "opts": { "key": "LEMON" },
+      "expected": "Lxfopv Ef Rnhr",
+      "mode": "encode"
+    },
+    {
+      "id": "key-cycles-on-letters-only",
+      "comment": "The key cycle advances only on letters; punctuation/spaces don't consume key positions.",
+      "input": "Hello, friend",
+      "opts": { "key": "CIPHER" },
+      "expected": "Jmass, wtqtuh",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-key-passthrough",
+      "comment": "Empty (or all-non-letter) key falls back to identity.",
+      "input": "Hello",
+      "opts": { "key": "" },
+      "expected": "Hello",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input is empty output regardless of key.",
+      "input": "",
+      "opts": { "key": "LEMON" },
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "unicode-passthrough",
+      "comment": "Non-ASCII characters pass through; the key advances only on ASCII letters.",
+      "input": "Héllo 🔒",
+      "opts": { "key": "AB" },
+      "expected": "Hémlp 🔒",
+      "mode": "encode"
+    }
+  ]
+}
