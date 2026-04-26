@@ -1,0 +1,54 @@
+---
+import Layout from '../components/Layout.astro';
+---
+
+<Layout title="Privacy — Ciphriend">
+  <article class="max-w-2xl space-y-6">
+    <header>
+      <p class="font-display text-xs uppercase tracking-[0.2em] text-primary mb-2">
+        &#47;&#47; privacy
+      </p>
+      <h1 class="text-3xl font-display tracking-tight">Nothing leaves your browser.</h1>
+    </header>
+
+    <p class="text-muted-foreground leading-relaxed">
+      Ciphriend is a static site. There is no backend, no API, and no telemetry. The only network traffic between your browser and our servers happens once: when you load the page. After that, everything you type, every cipher you run, every key you enter — all of it stays inside your tab.
+    </p>
+
+    <section class="space-y-2">
+      <h2 class="font-display text-sm uppercase tracking-wider text-foreground">
+        Sharing via link
+      </h2>
+      <p class="text-muted-foreground leading-relaxed">
+        The "Share link" button copies a URL where your input lives in the URL <em>fragment</em> (the part after <span class="font-display text-foreground">#</span>). Browsers don't send fragments to servers, so even your share links keep payloads off the wire. Recipients open the link and your browser reconstructs the state locally.
+      </p>
+    </section>
+
+    <section class="space-y-2">
+      <h2 class="font-display text-sm uppercase tracking-wider text-foreground">
+        Keys and passwords
+      </h2>
+      <p class="text-muted-foreground leading-relaxed">
+        Any field marked as a key or password is treated as <span class="text-foreground">ephemeral</span>: it lives only in the current tab's memory. We never write it to local storage, never include it in share links, and never log it. Closing the tab forgets it.
+      </p>
+    </section>
+
+    <section class="space-y-2">
+      <h2 class="font-display text-sm uppercase tracking-wider text-foreground">
+        Modern crypto
+      </h2>
+      <p class="text-muted-foreground leading-relaxed">
+        Ciphers that need real cryptographic primitives (AES-GCM, SHA-256) use the browser's native <span class="font-display text-foreground">crypto.subtle</span>. We don't ship our own crypto and we don't depend on third-party libraries for it.
+      </p>
+    </section>
+
+    <section class="space-y-2">
+      <h2 class="font-display text-sm uppercase tracking-wider text-foreground">
+        Trust, but verify
+      </h2>
+      <p class="text-muted-foreground leading-relaxed">
+        Open the network tab in your browser's devtools and watch what Ciphriend does (or, more importantly, what it doesn't do).
+      </p>
+    </section>
+  </article>
+</Layout>

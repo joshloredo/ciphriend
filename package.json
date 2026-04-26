@@ -1,0 +1,32 @@
+{
+  "name": "ciphriend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Cipher encoding, decoding, and visualization tool. Pure client-side. Astro 5 + Svelte 5.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "deploy": "astro build && wrangler pages deploy dist --project-name=ciphriend",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/svelte": "^7.2.5",
+    "@tailwindcss/vite": "^4.2.4",
+    "astro": "^5.18.1",
+    "svelte": "^5.55.5",
+    "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/svelte": "^5.3.1",
+    "jsdom": "^27.0.1",
+    "vitest": "^4.1.5",
+    "wrangler": "^4.85.0"
+  }
+}

@@ -1,0 +1,40 @@
+---
+import Layout from '../../components/Layout.astro';
+import CipherWorkbench from '../../islands/CipherWorkbench.svelte';
+import { ciphers, getCipher } from '../../ciphers/_registry';
+
+export function getStaticPaths() {
+  return ciphers.map((c) => ({ params: { id: c.id } }));
+}
+
+const { id } = Astro.params;
+const cipher = id ? getCipher(id) : undefined;
+
+if (!cipher) {
+  return Astro.redirect('/404');
+}
+
+const title = `${cipher.name} — Ciphriend`;
+const description = cipher.tagline;
+---
+
+<Layout {title} {description}>
+  <nav class="mb-6 text-xs font-display text-muted-foreground" aria-label="Breadcrumb">
+    <a href="/" class="hover:text-foreground transition-colors">Ciphriend</a>
+    <span class="mx-2 text-border">/</span>
+    <span class="capitalize">{cipher.category}</span>
+    <span class="mx-2 text-border">/</span>
+    <span class="text-foreground">{cipher.name}</span>
+  </nav>
+
+  <CipherWorkbench cipherId={cipher.id} client:load />
+
+  <section class="mt-10 max-w-2xl">
+    <h2 class="font-display text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
+      &#47;&#47; how it works
+    </h2>
+    <p class="text-sm text-muted-foreground leading-relaxed">
+      The {cipher.name} is one of the {cipher.category} ciphers Ciphriend ships with. Type into the input above and watch the output update live; press <span class="text-primary font-display">▶</span> in the visualization to step through the transformation character by character.
+    </p>
+  </section>
+</Layout>

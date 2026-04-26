@@ -1,0 +1,40 @@
+---
+import Layout from '../components/Layout.astro';
+---
+
+<Layout title="About — Ciphriend">
+  <article class="prose-style max-w-2xl space-y-6">
+    <header>
+      <p class="font-display text-xs uppercase tracking-[0.2em] text-primary mb-2">
+        &#47;&#47; about
+      </p>
+      <h1 class="text-3xl font-display tracking-tight">A friendly cipher tool.</h1>
+    </header>
+
+    <p class="text-muted-foreground leading-relaxed">
+      Ciphriend is a small web tool for encoding, decoding, and visualizing ciphers — from classical substitutions to modern crypto primitives. It's named after the two things it tries to be at once: <span class="text-foreground">cipher</span> and <span class="text-foreground">friend</span>.
+    </p>
+
+    <p class="text-muted-foreground leading-relaxed">
+      Every operation runs in your browser. No server, no telemetry, no logging. The architecture is the privacy promise — we can't peek at your inputs because we never see them.
+    </p>
+
+    <section>
+      <h2 class="font-display text-sm uppercase tracking-wider text-foreground mb-2">
+        Visualization
+      </h2>
+      <p class="text-muted-foreground leading-relaxed">
+        Educational ciphers come with a per-character visualization showing what the cipher is actually doing. The substitution-style ones (Caesar, ROT13, Atbash, Vigenère) share a generic visualizer; ciphers with a unique shape (Rail Fence, Base64, Morse, frequency analysis) get bespoke ones.
+      </p>
+    </section>
+
+    <section>
+      <h2 class="font-display text-sm uppercase tracking-wider text-foreground mb-2">
+        Open source
+      </h2>
+      <p class="text-muted-foreground leading-relaxed">
+        Built with Astro and Svelte. <a href="https://github.com/joshloredo/ciphriend" class="text-primary hover:underline">Source on GitHub</a>.
+      </p>
+    </section>
+  </article>
+</Layout>

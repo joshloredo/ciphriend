@@ -1,0 +1,51 @@
+---
+// Logo is a placeholder until the user supplies an SVG. Don't invent one.
+const links = [
+  { href: '/', label: '/Home' },
+  { href: '/about', label: '/About' },
+  { href: '/privacy', label: '/Privacy' },
+];
+const current = Astro.url.pathname;
+---
+
+<header class="border-b border-border/60 bg-background/70 backdrop-blur sticky top-0 z-30">
+  <nav class="w-full max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 group" aria-label="Ciphriend home">
+      <span class="grid place-items-center size-7 rounded-md border border-border bg-card group-hover:border-primary/60 transition-colors">
+        <span class="font-display text-primary text-sm leading-none">C</span>
+      </span>
+      <span class="font-display text-sm tracking-tight">
+        cipher<span class="text-primary">friend</span>
+      </span>
+    </a>
+
+    <ul class="flex items-center gap-1 text-sm font-display">
+      {links.map(({ href, label }) => (
+        <li>
+          <a
+            href={href}
+            class:list={[
+              'px-3 py-1.5 rounded-md transition-colors',
+              current === href
+                ? 'text-primary bg-primary/10'
+                : 'text-muted-foreground hover:text-foreground hover:bg-card',
+            ]}
+            aria-current={current === href ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+      <li>
+        <a
+          href="https://github.com/joshloredo/ciphriend"
+          target="_blank"
+          rel="noopener"
+          class="px-3 py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-card transition-colors"
+        >
+          /GitHub
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>

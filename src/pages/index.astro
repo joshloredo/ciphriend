@@ -1,0 +1,26 @@
+---
+import Layout from '../components/Layout.astro';
+import CipherGrid from '../components/CipherGrid.astro';
+import { ciphers } from '../ciphers/_registry';
+---
+
+<Layout>
+  <section class="mb-12 max-w-3xl">
+    <p class="font-display text-xs uppercase tracking-[0.2em] text-primary mb-4">
+      &#47;&#47; cipher + friend
+    </p>
+    <h1 class="text-4xl sm:text-5xl font-display tracking-tight leading-tight mb-4">
+      Your friend for ciphers.
+    </h1>
+    <p class="text-base text-muted-foreground leading-relaxed">
+      Encode, decode, and watch ciphers work, character by character. Everything runs in your browser — nothing is ever sent to a server, no logs, no analytics, no peeking.
+    </p>
+  </section>
+
+  <section>
+    <h2 class="font-display text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
+      &#47;&#47; pick a cipher
+    </h2>
+    <CipherGrid ciphers={ciphers} />
+  </section>
+</Layout>

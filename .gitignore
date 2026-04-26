@@ -41,3 +41,9 @@ coverage/
 
 # misc
 *.tsbuildinfo
+
+# playwright / scratch
+.playwright-mcp/
+*.png
+!public/**/*.png
+!.github/**/*.png
