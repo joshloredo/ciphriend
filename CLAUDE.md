@@ -55,7 +55,39 @@ These rules are project-specific and override generic conventions where they con
 
 ## What Ciphriend Is
 
-A client-side web tool ("Cipher" + "Friend") for encoding, decoding, and visualizing ciphers. Long-term scope: full cipher hub (classical + modern crypto + encodings + hashes + analysis tools). v1 ships 13 entries. Pure browser execution — no backend, ever.
+A client-side web tool ("Cipher" + "Friend") for encoding, decoding, and visualizing ciphers. **Live at https://ciphriend.joshloredo.com.** Long-term scope: full cipher hub. Pure browser execution — no backend, ever.
+
+### Current cipher catalog (23 entries)
+
+| Category | id | Name | Notes |
+|---|---|---|---|
+| classical | `caesar` | Caesar | trace viz, `+N` op |
+| classical | `rot13` | ROT13 | trace viz, `+13` op, involution |
+| classical | `atbash` | Atbash | trace viz, `↔` op, involution |
+| classical | `vigenere` | Vigenère | trace viz, `K(+N)` op, key-cycle group |
+| classical | `rail-fence` | Rail Fence | custom viz (zigzag grid) |
+| classical | `affine` | Affine | trace viz, math op |
+| classical | `bacon` | Bacon's Cipher | custom viz (5-bit A/B grid) |
+| classical | `polybius` | Polybius Square | custom viz (5×5 grid) |
+| classical | `tap-code` | Tap Code | custom viz (tap rhythm) |
+| encoding | `base64` | Base64 | custom viz (24-bit window), RFC 4648 vectors |
+| encoding | `hex` | Hex | no viz |
+| encoding | `url` | URL | no viz |
+| encoding | `binary` | Binary | no viz |
+| encoding | `braille` | Braille | custom viz (2×3 dot grid) |
+| hash | `sha-256` | SHA-256 | no viz, NIST vectors, async |
+| modern | `aes-gcm` | AES-GCM | no viz, ephemeral passphrase, async |
+| fun | `morse` | Morse | custom viz (dit-dah timing) |
+| fun | `reverse` | Reverse | trace viz, `↶` op, involution |
+| fun | `spongebob` | SpongeBob | trace viz, `↑↓` op, encode === decode |
+| fun | `leet` | Leet (1337) | trace viz, encode-only (ambiguous decode) |
+| fun | `nato` | NATO Phonetic | custom viz (letter cards) |
+| fun | `pig-latin` | Pig Latin | custom viz (word transform), encode-only |
+| analysis | `frequency` | Frequency Analysis | custom viz (histogram), encode-only |
+
+Categories: `classical | modern | encoding | hash | fun | analysis`. Adding a new category requires updating `CipherCategory` in `src/ciphers/_types.ts`; the home-page filter chips populate from the registry automatically.
+
+Deferred to a future session: Pigpen, Music note, Semaphore, Dancing Men, Zalgo. See `docs/superpowers/specs/2026-04-26-cipher-backlog.md`.
 
 ## Stack & Tooling
 
@@ -99,9 +131,11 @@ These are not preferences. They are structural promises Ciphriend makes to its u
    - logged to console (in production builds)
    - shipped to any error-tracking service
 3. **URL fragments cap at 6 kB.** Above that, refuse to share via link; show "Copy raw output instead." This is enforced in `src/lib/url-fragment.ts`.
-4. **No third-party fonts/scripts/CDNs.** Self-host everything. JetBrains Mono lives in `public/fonts/` as woff2.
+4. **No third-party fonts/scripts/CDNs in our authored code.** Self-host everything we ship. JetBrains Mono lives in `public/fonts/` as woff2. Do not add `<script src="https://...">` or external font/CSS imports.
 
-If you find yourself wanting to break one of these, STOP and ask the user. Don't add disclaimers to compensate; remove the offending feature.
+   **Accepted platform-level exception:** Cloudflare Pages auto-injects a Web Analytics beacon (`static.cloudflareinsights.com/beacon.min.js`) on every page. This was an explicit user decision to keep enabled — it tracks aggregate pageview metrics only, never sees URL fragments (where cipher I/O lives), and is part of the hosting platform rather than something we author. If you want this disabled, the toggle is in the Cloudflare Pages project settings; do not attempt to suppress it from the HTML directly (it'll be re-injected on next deploy).
+
+If you find yourself wanting to break any of #1-3 above, STOP and ask the user. Don't add disclaimers to compensate; remove the offending feature.
 
 ## Visualization Invariants
 
@@ -172,40 +206,130 @@ Out of scope for v1: visual regression testing, E2E browser automation. Both are
 
 ## Adding a New Cipher (the recipe)
 
-A cipher PR is **not mergeable** until ALL of these are satisfied. There are no exceptions for "just for now" or "we'll add tests later."
+A cipher PR is **not mergeable** until ALL of these are satisfied. There are no exceptions for "just for now" or "we'll add tests later." For a worked walkthrough with code samples, see `docs/adding-a-cipher.md`.
 
-1. Create `src/ciphers/<category>/<id>.ts` exporting a `CipherSpec`.
-2. Register the spec in `src/ciphers/_registry.ts`.
-3. **Vectors** (`tests/vectors/<source>/<id>.json`):
-   - At least 5 hand-written reference vectors, each citing a source in its `comment` field.
-   - For ciphers with formal specs (AES, SHA, HMAC, Base64), vendor the relevant authoritative file (Wycheproof / NIST / RFC) — see `tests/vectors/README.md`.
-4. **Tests** (`tests/ciphers/<id>.test.ts`):
-   - Loop through vectors via `loadVectors()` + `runnableVectors()` from `tests/helpers/vector-runner.ts`.
-   - Property test the cipher's invariant via `roundTrip()` / `involution()` / `determinism()` from `tests/helpers/properties.ts`.
-   - If the cipher exports `trace()`, also assert `traceMatchesOutput()`.
-   - Cover edge cases: empty input, all-whitespace, Unicode, single char, long input.
-5. **Visualization (optional)**:
-   - Substitution-style? Add a `trace()` function (set `op` for the middle row). The generic `<TraceVisualizer>` renders it for free.
-   - Needs something custom? Drop a `<id>.viz.svelte` next to the engine file and point `viz` at it.
-6. Verify locally: BOTH `npm test` AND `npm run test:thorough` pass.
+### The five files
 
-**If you find yourself editing files outside `src/ciphers/<category>/`, `tests/ciphers/`, `tests/vectors/`, and `src/ciphers/_registry.ts`, the abstraction is wrong — flag it before continuing.**
+You'll touch exactly five files (the engine, the registry, the vector JSON, the test, and optionally a viz component). If you find yourself editing anything outside this set, **the abstraction is wrong — flag it before continuing.**
+
+1. **`src/ciphers/<category>/<id>.ts`** — the engine. Exports a `CipherSpec`. Pure TypeScript, no framework imports. Pick the category that fits (`classical | modern | encoding | hash | fun | analysis`).
+2. **`src/ciphers/_registry.ts`** — add an `import` for your spec and push it into the `ciphers` array.
+3. **`tests/vectors/<source>/<id>.json`** — at least 5 hand-written reference vectors. Each MUST cite a source in its `comment` field. Source folders:
+   - `wycheproof/` — vendored from C2SP/Wycheproof (Apache 2.0). Pin to a commit.
+   - `nist/` — NIST CAVP / FIPS document references.
+   - `rfc/` — IETF RFC test tables. Cite section.
+   - `classical/` — hand-written classical cipher cases (Wikipedia / CrypTool / dCode cross-checked).
+   - `encoding/` — hand-written encoding cases (Hex, URL, Binary, Morse, Reverse, etc.) cross-checked against platform globals.
+   - `modern/` — Ciphriend-generated decode-only fixtures for composite schemes (e.g., AES-GCM with PBKDF2). Don't put non-composite modern crypto here — vendor Wycheproof.
+4. **`tests/ciphers/<id>.test.ts`** — the test file. Always uses `loadVectors()` + `runnableVectors()` to consume the JSON, plus a property helper from `tests/helpers/properties.ts`.
+5. **`src/ciphers/<category>/<id>.viz.svelte`** *(optional)* — custom Svelte viz component. Only when `trace()`-based viz won't fit.
+
+### When to use which property helper
+
+| Property | Use when | Examples |
+|---|---|---|
+| `roundTrip` | The cipher is reversible — `decode(encode(x, k), k) === x` | Caesar, Vigenère, Base64, Affine, Polybius, Bacon, Rail Fence |
+| `involution` | The cipher is its own inverse | ROT13, Atbash, Reverse, SpongeBob |
+| `determinism` | One-way (no decode) but deterministic | SHA-256, Frequency |
+| `traceMatchesOutput` | The cipher exports `trace()` | Every trace-based cipher (catches drift between viz and engine) |
+
+For non-deterministic ciphers (AES-GCM with random salt/IV), use a custom round-trip property that re-encrypts and decrypts; see `tests/ciphers/aes-gcm.test.ts`.
+
+### Visualization decision tree
+
+```
+Does each input character produce one output character?
+├── YES → add `trace(input, opts, mode) → CharTransform[]` to the spec.
+│         The generic <TraceVisualizer> renders it for free.
+│         Set the `op` field for the middle row glyph (see conventions below).
+│
+└── NO → drop a colocated `<id>.viz.svelte` and point `viz` at it.
+         The component receives (input, output, opts, mode) as props.
+         Component must be a pure renderer — no fetching, no global state.
+```
+
+**`op` glyph conventions (trace-based viz)**
+
+| Pattern | Glyph | Used by |
+|---|---|---|
+| Numeric shift | `+N` / `-N` | Caesar, ROT13, Affine, Reverse-as-shift |
+| Mirror | `↔` | Atbash |
+| Polyalphabetic | `K(+N)` (key letter + shift) | Vigenère |
+| Substitution | the digit/symbol replacing the letter | Leet (`3` for `e`) |
+| Reversal | `↶` | Reverse |
+| Case toggle | `↑` / `↓` | SpongeBob |
+| Pass-through | `·` | non-letter chars in any cipher |
+
+When in doubt, keep the glyph short (≤4 chars) and use the verbose form in `detail` for the hover tooltip.
+
+### Templates by cipher shape
+
+| Your cipher looks like… | Copy from |
+|---|---|
+| Caesar with a different shift schedule | `src/ciphers/classical/caesar.ts` |
+| Polyalphabetic with a key | `src/ciphers/classical/vigenere.ts` |
+| Involution (encode === decode) | `src/ciphers/classical/atbash.ts` or `src/ciphers/fun/rot13.ts` |
+| Substitution table | `src/ciphers/fun/leet.ts` (encode-only) |
+| Word-level transform | `src/ciphers/fun/pig-latin.ts` (custom viz, encode-only) |
+| Bytes-in / bytes-out encoding | `src/ciphers/encoding/base64.ts` |
+| Hash (one-way) | `src/ciphers/hash/sha-256.ts` |
+| Authenticated encryption | `src/ciphers/modern/aes-gcm.ts` |
+| Transposition (output positions ≠ input positions) | `src/ciphers/classical/rail-fence.ts` |
+| Grid lookup (5×5) | `src/ciphers/classical/polybius.ts` |
+| Analysis (encode-only, output is summary) | `src/ciphers/analysis/frequency.ts` |
+
+### Verify checklist
+
+Before opening a PR (or before saying "done"):
+
+- [ ] `npm test` green
+- [ ] `npm run test:thorough` green
+- [ ] `npm run build` produces a route at `/c/<your-id>/` with no errors
+- [ ] Vector file's `source` cites where the cases came from
+- [ ] If keys/secrets are involved, the option field is `kind: 'password'` or `ephemeral: true`
+- [ ] Visited `localhost:4321/c/<your-id>` and confirmed the workbench renders correctly
+- [ ] If trace-based viz, the `op` glyph is short and informative
+- [ ] If custom viz, it honors prefers-reduced-motion (covered globally; don't add inline animations that bypass)
 
 ## Deployment
 
-- **Cloudflare Pages**, project name `ciphriend`. CI via GitHub Actions (`.github/workflows/deploy.yml`).
-- **Required secrets** in GitHub: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`.
-- **Manual deploy:** `npx wrangler pages deploy dist --project-name=ciphriend`.
-- **Domain:** TBD (subdomain `ciphriend.joshloredo.com` or own apex).
+**Live at https://ciphriend.joshloredo.com**, hosted on Cloudflare Pages (project name `ciphriend`).
+
+### Active deploy path: local CLI (Path A)
+
+We deploy from the developer's machine via wrangler:
+
+```bash
+npm run deploy
+# = astro build && wrangler pages deploy dist --project-name=ciphriend
+```
+
+Wrangler authenticates via OAuth (`npx wrangler login`, one-time browser flow). The OAuth credential persists in `~/Library/Preferences/.wrangler/config/` on macOS.
+
+**Before deploying:** run `npm test` and `npm run test:thorough`. Both must pass — production deploys without test gating are technically possible from a local machine, but our discipline is to gate. CI (`test.yml`) runs the same suite on every push as a backstop.
+
+### Inactive: GitHub Actions auto-deploy (Path B)
+
+`.github/workflows/deploy.yml` exists and is wired to deploy on push to `main`, but the required secrets aren't set:
+
+- `CLOUDFLARE_API_TOKEN` — generate at https://dash.cloudflare.com/profile/api-tokens
+- `CLOUDFLARE_ACCOUNT_ID` — `npx wrangler whoami` shows it
+
+To enable Path B, set those two secrets via `gh secret set` and re-run the workflow. Path A and B can coexist; whichever runs last wins.
+
+### Domain
+
+- Custom domain `ciphriend.joshloredo.com` is configured at the Pages project level (Cloudflare dashboard → Pages → ciphriend → Custom domains). DNS auto-managed because `joshloredo.com` is in the same Cloudflare account.
+- Default URL `ciphriend.pages.dev` also still works — same files, no SSL difference.
 
 ## Out of Scope (don't drift here without an explicit user request)
 
 - Backend services / accounts / cross-device sync
-- Brute-force / cryptanalysis tools beyond v1's frequency analysis
-- File upload / binary inputs (text only for v1)
+- Brute-force / cryptanalysis tools beyond the existing frequency analysis
+- File upload / binary inputs (text only)
 - PWA / install banner / offline service worker
 - Theme switching / light mode
 - i18n
-- Analytics
+- Analytics that we author or that touch cipher I/O (the platform-level Cloudflare beacon is documented as an accepted exception; don't add more)
 
 If a request seems to require any of these, surface the conflict before implementing.

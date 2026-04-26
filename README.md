@@ -2,9 +2,9 @@
 
 > Cipher + friend. Encode, decode, and visualize ciphers in your browser.
 
-**Live (TBD):** `ciphriend.joshloredo.com`
+**Live: https://ciphriend.joshloredo.com**
 
-Ciphriend is a small, opinionated web tool for working with ciphers — from classical substitutions (Caesar, Vigenère, Atbash, Rail Fence…) to modern primitives (AES-GCM, SHA-256) and encodings (Base64, hex, URL, binary). Most ciphers come with a per-character visualization so you can *see* what's happening, not just read the output.
+Ciphriend is a small, opinionated web tool for working with ciphers — from classical substitutions (Caesar, Vigenère, Atbash, Rail Fence, Affine, Bacon, Polybius, Tap Code) to modern primitives (AES-GCM, SHA-256), encodings (Base64, hex, URL, binary, Braille), an analysis tool (frequency), and a stack of "fun" extras (Morse, Reverse, SpongeBob, Leet, NATO, Pig Latin). Most ciphers come with a per-character visualization so you can *see* what's happening, not just read the output.
 
 Everything runs in your browser. There is no backend.
 
@@ -86,23 +86,25 @@ docs/
 
 ## Adding a new cipher
 
-A cipher PR is **not mergeable** until ALL of these are satisfied:
+You'll touch exactly five files (engine, registry, vector JSON, test, optional viz). For the rules, see [`CLAUDE.md`](./CLAUDE.md). For a worked walkthrough with a complete code example, see [`docs/adding-a-cipher.md`](./docs/adding-a-cipher.md).
 
-1. `src/ciphers/<category>/<id>.ts` exports a `CipherSpec`.
-2. The spec is registered in `src/ciphers/_registry.ts`.
-3. A vector file at `tests/vectors/<source>/<id>.json` with at least 5 vectors (hand-cited or vendored from Wycheproof/NIST/RFC).
-4. A test file at `tests/ciphers/<id>.test.ts` that loops the vectors via the `vector-runner` helper AND uses the appropriate `properties` helper (`roundTrip`, `involution`, `determinism`, `traceMatchesOutput`).
-5. Edge cases covered: empty, all-whitespace, Unicode, long input.
-6. (Optional) A `trace()` function for the generic visualizer, or a `<id>.viz.svelte` for a custom one.
-7. BOTH `npm test` AND `npm run test:thorough` pass.
+The 30-second version:
 
-If you find yourself editing files outside `src/ciphers/<category>/`, `tests/ciphers/`, `tests/vectors/`, and `_registry.ts`, the abstraction is wrong — flag it before continuing.
+1. `src/ciphers/<category>/<id>.ts` — engine, exports a `CipherSpec`.
+2. `src/ciphers/_registry.ts` — import + push into the array.
+3. `tests/vectors/<source>/<id>.json` — at least 5 cited reference vectors.
+4. `tests/ciphers/<id>.test.ts` — loop vectors via `loadVectors()` + property helper.
+5. `src/ciphers/<category>/<id>.viz.svelte` (optional) — only when `trace()` won't fit.
 
-See `CLAUDE.md` and `tests/vectors/README.md` for the full rules of engagement.
+Then: `npm test && npm run test:thorough` must both pass before merging.
+
+**If you find yourself editing files outside this set, the abstraction is wrong — flag it before continuing.**
 
 ## Privacy
 
-Ciphriend has no backend. No telemetry. No analytics that touch cipher I/O. Keys and passwords are tab-scoped and never persisted. URL share links keep payloads in the fragment, which browsers do not send to servers. The architecture is the privacy promise.
+Ciphriend has no backend that we operate. Keys and passwords (`ephemeral: true` option fields) are tab-scoped and never persisted. URL share links keep payloads in the fragment, which browsers do not send to servers. The architecture is the privacy promise.
+
+**One disclosed exception:** Cloudflare Pages auto-injects an aggregate Web Analytics beacon (`static.cloudflareinsights.com/beacon.min.js`) on every page. It tracks pageviews and basic browser metadata; it does not see URL fragments where cipher input/output lives. This is a hosting-platform feature, not something we author. See `CLAUDE.md` for the full privacy invariants.
 
 ## License
 
