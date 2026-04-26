@@ -7,6 +7,7 @@ import { railFence } from './classical/rail-fence';
 import { affine } from './classical/affine';
 import { bacon } from './classical/bacon';
 import { polybius } from './classical/polybius';
+import { tapCode } from './classical/tap-code';
 import { base64 } from './encoding/base64';
 import { hex } from './encoding/hex';
 import { url } from './encoding/url';
@@ -34,6 +35,7 @@ export const ciphers: CipherSpec[] = [
   affine as CipherSpec,
   bacon as CipherSpec,
   polybius as CipherSpec,
+  tapCode as CipherSpec,
   base64 as CipherSpec,
   hex as CipherSpec,
   url as CipherSpec,

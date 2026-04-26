@@ -1,0 +1,64 @@
+{
+  "source": "Tap code (https://en.wikipedia.org/wiki/Tap_code) — standard 5×5 grid with C and K sharing the (1, 3) cell. Two-tap encoding per letter, separated by space; letters separated by double space.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "hello",
+      "comment": "H=23, E=15, L=31, L=31, O=34.",
+      "input": "HELLO",
+      "opts": {},
+      "expected": ".. ...  . .....  ... .  ... .  ... ....",
+      "mode": "encode"
+    },
+    {
+      "id": "sos",
+      "comment": "Distress call: S=43, O=34, S=43.",
+      "input": "SOS",
+      "opts": {},
+      "expected": ".... ...  ... ....  .... ...",
+      "mode": "encode"
+    },
+    {
+      "id": "c-and-k-share-cell",
+      "comment": "C and K both encode to (1, 3).",
+      "input": "CK",
+      "opts": {},
+      "expected": ". ...  . ...",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-roundtrip",
+      "comment": "Decode recovers HELLO.",
+      "input": ".. ...  . .....  ... .  ... .  ... ....",
+      "opts": {},
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-k-becomes-c",
+      "comment": "Decoded output never contains K — (1, 3) decodes to C.",
+      "input": ". ...",
+      "opts": {},
+      "expected": "C",
+      "mode": "decode"
+    },
+    {
+      "id": "non-letter-input-skipped",
+      "comment": "Punctuation and digits are dropped on encode.",
+      "input": "Hi 42!",
+      "opts": {},
+      "expected": ".. ...  .. ....",
+      "mode": "encode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}
