@@ -1,0 +1,80 @@
+{
+  "source": "Modern 26-letter Bacon's cipher: each letter mapped to its 5-bit binary index as a string of A/B (A=AAAAA, B=AAAAB, …, Z=BBAAB).",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "single-A",
+      "comment": "A is index 0, all-A pattern.",
+      "input": "A",
+      "opts": {},
+      "expected": "AAAAA",
+      "mode": "encode"
+    },
+    {
+      "id": "single-Z",
+      "comment": "Z is index 25, BBAAB.",
+      "input": "Z",
+      "opts": {},
+      "expected": "BBAAB",
+      "mode": "encode"
+    },
+    {
+      "id": "hello",
+      "comment": "Five letters → five 5-letter groups separated by spaces.",
+      "input": "Hello",
+      "opts": {},
+      "expected": "AABBB AABAA ABABB ABABB ABBBA",
+      "mode": "encode"
+    },
+    {
+      "id": "multi-word",
+      "comment": "Word breaks become ' / '.",
+      "input": "Bacon was here",
+      "opts": {},
+      "expected": "AAAAB AAAAA AAABA ABBBA ABBAB / BABBA AAAAA BAABA / AABBB AABAA BAAAB AABAA",
+      "mode": "encode"
+    },
+    {
+      "id": "decode-roundtrip",
+      "comment": "Decode recovers the uppercase original.",
+      "input": "AABBB AABAA ABABB ABABB ABBBA",
+      "opts": {},
+      "expected": "HELLO",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-multi-word",
+      "comment": "Decoder splits on '/' for word boundaries.",
+      "input": "AABBB ABAAA / AAAAA ABABB ABABB",
+      "opts": {},
+      "expected": "HI ALL",
+      "mode": "decode"
+    },
+    {
+      "id": "decode-unknown-token-becomes-question-mark",
+      "comment": "Unknown 5-letter groups become '?'.",
+      "input": "AAAAA XXXXX BBBBB",
+      "opts": {},
+      "expected": "A??",
+      "mode": "decode"
+    },
+    {
+      "id": "non-letter-input-skipped",
+      "comment": "Digits and punctuation in input are silently dropped on encode.",
+      "input": "Hi 42!",
+      "opts": {},
+      "expected": "AABBB ABAAA",
+      "mode": "encode"
+    },
+    {
+      "id": "empty",
+      "comment": "Empty input.",
+      "input": "",
+      "opts": {},
+      "expected": "",
+      "mode": "encode"
+    }
+  ]
+}
