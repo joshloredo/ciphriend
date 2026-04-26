@@ -1,0 +1,64 @@
+{
+  "source": "Wikipedia: Rail fence cipher (https://en.wikipedia.org/wiki/Rail_fence_cipher) + manually verified by tracing the zigzag.",
+  "license": "Captured outputs; see source URLs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "wiki-canonical-encode",
+      "comment": "Wikipedia's canonical 25-char example with 3 rails.",
+      "input": "WEAREDISCOVEREDFLEEATONCE",
+      "opts": { "rails": 3 },
+      "expected": "WECRLTEERDSOEEFEAOCAIVDEN",
+      "mode": "encode"
+    },
+    {
+      "id": "wiki-canonical-decode",
+      "comment": "Round-trip of the Wikipedia example.",
+      "input": "WECRLTEERDSOEEFEAOCAIVDEN",
+      "opts": { "rails": 3 },
+      "expected": "WEAREDISCOVEREDFLEEATONCE",
+      "mode": "decode"
+    },
+    {
+      "id": "two-rails-defends-against-degenerate-case",
+      "comment": "With 2 rails, the cipher takes alternating characters: even positions, then odd.",
+      "input": "ABCDEFGH",
+      "opts": { "rails": 2 },
+      "expected": "ACEGBDFH",
+      "mode": "encode"
+    },
+    {
+      "id": "four-rails-with-spaces",
+      "comment": "Spaces and punctuation are carried through the zigzag like any other character.",
+      "input": "Hello, friend!",
+      "opts": { "rails": 4 },
+      "expected": "H de,fn!loreli",
+      "mode": "encode"
+    },
+    {
+      "id": "single-character",
+      "comment": "Single-char input is unchanged.",
+      "input": "X",
+      "opts": { "rails": 5 },
+      "expected": "X",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input is empty output.",
+      "input": "",
+      "opts": { "rails": 3 },
+      "expected": "",
+      "mode": "encode"
+    },
+    {
+      "id": "rails-clamped-to-min-2",
+      "comment": "Rails of 1 (or less) is meaningless; we clamp to 2.",
+      "input": "ABCDE",
+      "opts": { "rails": 1 },
+      "expected": "ACEBD",
+      "mode": "encode"
+    }
+  ]
+}
