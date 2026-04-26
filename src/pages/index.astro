@@ -1,6 +1,6 @@
 ---
 import Layout from '../components/Layout.astro';
-import SearchFilter from '../islands/SearchFilter.svelte';
+import CategoryFilter from '../islands/CategoryFilter.svelte';
 import { ciphers } from '../ciphers/_registry';
 
 const cipherCards = ciphers.map((c) => {
@@ -35,6 +35,6 @@ const cipherCards = ciphers.map((c) => {
     <h2 class="font-display text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
       &#47;&#47; pick a cipher
     </h2>
-    <SearchFilter ciphers={cipherCards} client:load />
+    <CategoryFilter ciphers={cipherCards} client:load />
   </section>
 </Layout>
