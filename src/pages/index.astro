@@ -1,7 +1,21 @@
 ---
 import Layout from '../components/Layout.astro';
-import CipherGrid from '../components/CipherGrid.astro';
+import SearchFilter from '../islands/SearchFilter.svelte';
 import { ciphers } from '../ciphers/_registry';
+
+const cipherCards = ciphers.map((c) => {
+  const ex = c.examples?.[0];
+  // Skip the inline preview for ciphers whose example output is empty
+  // (e.g. AES-GCM, where the ciphertext is non-deterministic and can't be pinned).
+  const showPreview = ex && typeof ex.output === 'string' && ex.output.length > 0;
+  return {
+    id: c.id,
+    name: c.name,
+    tagline: c.tagline,
+    category: c.category,
+    examplePreview: showPreview ? { input: ex.input, output: ex.output } : undefined,
+  };
+});
 ---
 
 <Layout>
@@ -21,6 +35,6 @@ import { ciphers } from '../ciphers/_registry';
     <h2 class="font-display text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
       &#47;&#47; pick a cipher
     </h2>
-    <CipherGrid ciphers={ciphers} />
+    <SearchFilter ciphers={cipherCards} client:load />
   </section>
 </Layout>
