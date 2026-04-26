@@ -11,6 +11,7 @@ import { binary } from './encoding/binary';
 import { sha256 } from './hash/sha-256';
 import { aesGcm } from './modern/aes-gcm';
 import { morse } from './fun/morse';
+import { frequency } from './analysis/frequency';
 
 /**
  * The single source of truth for which ciphers exist.
@@ -29,6 +30,7 @@ export const ciphers: CipherSpec[] = [
   sha256 as CipherSpec,
   aesGcm as CipherSpec,
   morse as CipherSpec,
+  frequency as CipherSpec,
 ];
 
 /** Look up a cipher by id. Used by route handlers and the workbench. */

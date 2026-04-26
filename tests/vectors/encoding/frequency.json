@@ -1,0 +1,72 @@
+{
+  "source": "Hand-curated frequency-analysis test inputs. Outputs computed from the cipher's own deterministic counting algorithm and verified against manual counts.",
+  "license": "Captured outputs.",
+  "version": "captured 2026-04-26",
+  "imported": "2026-04-26",
+  "vectors": [
+    {
+      "id": "single-A",
+      "comment": "Single letter input.",
+      "input": "A",
+      "opts": {},
+      "expected": "1 letter · top 5: A: 100.0%",
+      "mode": "encode"
+    },
+    {
+      "id": "all-As",
+      "comment": "Five A's gives 100% A frequency.",
+      "input": "AAAAA",
+      "opts": {},
+      "expected": "5 letters · top 5: A: 100.0%",
+      "mode": "encode"
+    },
+    {
+      "id": "uniform-three-letters",
+      "comment": "ABCABC distributes 33.3% across three letters; ties broken alphabetically.",
+      "input": "ABCABC",
+      "opts": {},
+      "expected": "6 letters · top 5: A: 33.3%, B: 33.3%, C: 33.3%",
+      "mode": "encode"
+    },
+    {
+      "id": "case-insensitive",
+      "comment": "Lowercase counts as the same letter.",
+      "input": "AaAa",
+      "opts": {},
+      "expected": "4 letters · top 5: A: 100.0%",
+      "mode": "encode"
+    },
+    {
+      "id": "ignores-non-letters",
+      "comment": "Digits, punctuation, and whitespace do not contribute.",
+      "input": "A 1 B 2 C 3",
+      "opts": {},
+      "expected": "3 letters · top 5: A: 33.3%, B: 33.3%, C: 33.3%",
+      "mode": "encode"
+    },
+    {
+      "id": "pangram",
+      "comment": "Quick-brown-fox pangram. 35 letters total, O most common at 4 occurrences.",
+      "input": "The quick brown fox jumps over the lazy dog",
+      "opts": {},
+      "expected": "35 letters · top 5: O: 11.4%, E: 8.6%, H: 5.7%, R: 5.7%, T: 5.7%",
+      "mode": "encode"
+    },
+    {
+      "id": "empty-input",
+      "comment": "Empty input gives a friendly placeholder rather than an error.",
+      "input": "",
+      "opts": {},
+      "expected": "No letters in input.",
+      "mode": "encode"
+    },
+    {
+      "id": "no-letters-only-digits",
+      "comment": "Input with no letters at all.",
+      "input": "12345 !!!",
+      "opts": {},
+      "expected": "No letters in input.",
+      "mode": "encode"
+    }
+  ]
+}
